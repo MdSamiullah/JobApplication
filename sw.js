@@ -2,8 +2,8 @@
  * Built files are listed at build time (scripts/build-sw.mjs) and saved on first visit.
  * Pages: network first, then the saved copy. Built files: saved copy first (their names change with each version).
  * Server requests (/api, the Cloudflare Worker, AI services) are never saved. */
-const VERSION = 'e95184ab4646';
-const FILES = ["./","assets/__vite-browser-external-BIHI7g3E.js","assets/docxTemplate-BQcHqSqa.js","assets/index-BHsVt6kn.js","assets/index-yILFsZ-Z.css","assets/pdf.worker.min-XYqMGZ9_.js","assets/pdf.worker.min-Z0yPf8Sv.mjs","assets/vendor-DgjsPrM2.js","assets/worker-BzDtYIsj.js","auth-redirect.html","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","manifest.webmanifest","index.html"];
+const VERSION = '7cfea213427c';
+const FILES = ["./","assets/__vite-browser-external-BIHI7g3E.js","assets/docxTemplate-BQcHqSqa.js","assets/index-DEih3RUF.css","assets/index-wLwB52BN.js","assets/pdf.worker.min-XYqMGZ9_.js","assets/pdf.worker.min-Z0yPf8Sv.mjs","assets/vendor-DgjsPrM2.js","assets/worker-BzDtYIsj.js","auth-redirect.html","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","manifest.webmanifest","index.html"];
 const CACHE = `jobpack-${VERSION}`;
 
 self.addEventListener('install', (e) => {
