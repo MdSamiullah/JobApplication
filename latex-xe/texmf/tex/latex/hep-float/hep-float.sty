@@ -1,0 +1,95 @@
+%%
+%% This is file `hep-float.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hep-float-implementation.dtx  (with options: `package')
+%% This is a generated file.
+%% Copyright (C) 2019-2020 by Jan Hajer
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. The latest version of this license is in:
+%% http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{hep-float}[2021/08/01 v1.0 Float adjustments ]
+
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{
+  family=hepfloat,
+  prefix=hepfloat@
+}
+\DeclareBoolOption[true]{manualplacement}
+\ProcessKeyvalOptions*
+\setcounter{bottomnumber}{0} % 1
+\setcounter{topnumber}{1} % 2
+\setcounter{dbltopnumber}{1} % 2
+\renewcommand{\topfraction}{.9} % .7
+\renewcommand{\dbltopfraction}{.9} % .7
+\renewcommand{\textfraction}{.1} % .2
+\renewcommand{\floatpagefraction}{.8} % .5
+\let\hep@figure\figure%
+\let\end@hep@figure\endfigure%
+\let\hep@table\table%
+\let\end@hep@table\endtable%
+\ifhepfloat@manualplacement%
+  \renewenvironment{figure}[1][tbp]{%
+    \hep@figure[#1]\centering%
+    }{\end@hep@figure}%
+  \renewenvironment{table}[1][tbp]{%
+    \hep@table[#1]\centering%
+  }{\end@hep@table}%
+\else%
+  \renewenvironment{figure}[1][]{%
+    \hep@figure\centering%
+  }{\end@hep@figure}%
+  \renewenvironment{table}[1][]{%
+    \hep@table\centering%
+  }{\end@hep@table}
+\fi%
+\RequirePackage[subrefformat=parens]{subcaption}
+\captionsetup{font=small}
+\captionsetup[sub]{font=small}
+\providecommand*\subcaption@minipage[2]{%
+  \minipage#1{#2}\setcaptionsubtype\relax%
+}
+\newcommand{\hep@panels@space}{20}
+\newenvironment{panels}[2][b]{%
+  \newcommand{\begin@subcaption@minipage}[2][b]{%
+    \caption@withoptargs\subcaption@minipage[##1]{##2}%
+    \centering\vskip 0pt%
+  }
+  \ifdim#2pt>1pt%
+    \newcommand{\hep@panel@space}{%
+      (1-#2+\hep@panels@space)/\hep@panels@space%
+    }%
+    \newcommand{\panel}[1][b]{%
+      \endminipage\hfill\begin@subcaption@minipage[#1]{%
+        \linewidth/#2*\hep@panel@space%
+      }%
+    }%
+    \begin@subcaption@minipage[#1]{\linewidth/#2*\hep@panel@space}%
+  \else%
+    \newcommand{\panel}[2][b]{%
+      \endminipage\hfill\begin@subcaption@minipage[#1]{##2\linewidth}%
+    }%
+    \begin@subcaption@minipage[#1]{#2\linewidth}%
+  \fi%
+}{\endminipage}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+
+\RequirePackage{graphicx}
+\providecommand{\tikzsetnextfilename}[1]{}
+\newcommand{\graphic}[2][1]{\tikzsetnextfilename{#2}{%
+  \centering\includegraphics[width=#1\linewidth]{#2}\par%
+}}
+\newcommand{\graphics}[1]{\graphicspath{{./#1/}}}
+
+\endinput
+%%
+%% End of file `hep-float.sty'.

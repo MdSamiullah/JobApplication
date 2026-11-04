@@ -1,0 +1,229 @@
+%% Paket fuer Logos
+%%
+%% This is file `hvlogos.sty',
+%%
+%% Copyright (C) 2021,22  Herbert Voss
+%%
+%% This program can be redistributed and/or modified under the terms
+%% of the LaTeX Project Public License Distributed from CTAN archives
+%% in directory macros/latex/base/lppl.txt.
+%
+%
+% -------------------------------------
+\ProvidesPackage{hvlogos}[2022/01/08 v. 0.05 Logos (hv)]
+%
+\newif\if@dtk@newengine \@dtk@newenginetrue 
+%
+\RequirePackage{fetamont,hologo,dantelogo,xspace,expl3}
+
+
+\ifluatex\else\ifxetex\else\@dtk@newenginefalse\fi\fi
+\if@dtk@newengine
+  \RequirePackage{unicode-math}
+  \setmathfont{LatinModernMath-Regular}
+  \setmathfont[version=XITS]{XITSMath-Regular.otf}
+\fi  
+%
+\iffalse
+\DeclareRobustCommand\ffmfamily{\not@math@alphabet\ffmfamily\relax
+  \fontencoding{T1}\fontfamily{ffm}\selectfont}
+\DeclareTextFontCommand{\textffm}{\ffmfamily}
+\def\MF{\textffm{META}\@dischyph\textffm{FONT}\@}
+\def\MP{\textffm{META}\@dischyph\textffm{POST}\@}
+\def\MT{\textffm{META}\@dischyph\textffm{TYPE1}\@}
+\fi
+
+\def\mpShort{\textffm{MP}\@}
+\def\mfShort{\textffm{MF}\@}
+
+\ExplSyntaxOn
+\DeclareDocumentCommand\hologo@La{ O{-0.25em} }%
+{  L%
+  \ifx\f@family\sfdefault\kern#1\else\kern\dimexpr#1+0.02em\relax\fi
+  \begingroup
+    \setbox\ltx@zero\hbox{T}%
+    \vbox to\ht\ltx@zero{%
+      \hbox{%
+        \ltx@ifundefined{check@mathfonts}{%
+          \csname sevenrm\endcsname
+        }{%
+          \check@mathfonts
+          \fontsize\sf@size{0pt}%
+          \math@fontsfalse\selectfont
+        }%
+        A%
+      }%
+      \vss
+    }%
+  \endgroup
+}
+\NewDocumentCommand\hvLaTeX{ O{-0.25em} O{-0.15em} }
+  {\def\LaTeX{\hologo@La[#1]\kern#2\hologo{TeX}}}
+  
+\NewDocumentCommand\hvLaTeXTeX{ O{-0.1em} O{-0.25em} O{-0.15em} O{-0.1em} }
+  {\def\LaTeXTeX{(\kern#1\hologo@La[#2]\kern#3)\kern#4\hologo{TeX}}}
+ 
+\hvLaTeX 
+\hvLaTeXTeX
+
+\ExplSyntaxOff
+
+\def\AmS{\textsf{AMS}}
+\let\AMS\AmS
+%{\ifluatex\mathversion{XITS}\fi%
+%     $\mathcal{A}$\kern-.1667em\lower.5ex\hbox{$\mathcal{M}$}\kern-.125em$\mathcal{S}$}}%  $ 
+\def\amsmath{\AMS\textsf{math}}
+\def\AmSLaTeX{\mbox{\textsf{AMS}-\LaTeX}}
+\def\AmSTeX{\mbox{\textsf{AMS}-\hologo{TeX}}}
+\DeclareRobustCommand\Biber{\textsf{Biber}}
+\let\biber\Biber
+\DeclareRobustCommand\BibTeX{\@ifnextchar8\@@BibTeX\@BibTeX}
+\def\@BibTeX{{\hologoLogoSetup{BibTeX}{variant=sc}\hologo{BibTeX}}}
+\def\BibTeXacht{{\hologoLogoSetup{BibTeX8}{variant=sc}\hologo{BibTeX8}}}
+\def\@@BibTeX8{\hologo{BibTeX8}}
+\DeclareRobustCommand\BibLaTeX{Bib\LaTeX}
+\let\biblatex\BibLaTeX
+\def\ConTeXt{\hologo{ConTeXt}}
+\let\context\ConTeXt
+\def\emTeX{\hologo{emTeX}}
+\def\eTeX{\hologo{eTeX}}
+\def\ExTeX{\hologo{ExTeX}}
+\def\HanTheThanh{\hologo{HanTheThanh}}%
+\let\HTT\HanTheThanh
+\def\iniTeX{\hologo{iniTeX}}
+\def\KOMAScript{\hologo{KOMAScript}}
+
+%\def\LaTeX{\hologo{LaTeX}}
+%\def\LaTeXTeX{\hologo{(La)TeX}}
+\def\LaTeXe{\hologo{LaTeX2e}}
+\def\LaTeXIII{\hologo{LaTeX3}}
+\def\LaTeXML{\hologo{LaTeXML}}
+\def\LuaLaTeX{\hologo{LuaLaTeX}}
+\let\lualatex\LuaLaTeX
+\def\LuaTeX{\hologo{LuaTeX}}
+
+\let\HoLogoHtml@LuaHBTeX\HoLogo@LuaHBTeX
+\def\HoLogo@LuaHBTeX#1{%
+  \HOLOGO@mbox{%
+    LuaHB%
+    \hologo{TeX}%
+  }%
+}
+
+\def\LuaHBTeX{\hologo{LuaHBTeX}}
+\let\luahbtex\LuaHBTeX
+\let\LuahbTeX\LuaHBTeX
+\let\luatex\LuaTeX
+%
+
+\def\LuaMetaTeX{%
+  \mbox{Lua}%
+%  \HOLOGO@discretionary
+%  \mbox{\fontfamily{logo}\fontencoding{U}\selectfont META}
+  \HoLogoFont@font{METAFONT}{logo}{\mbox{META}}%
+%  \HOLOGO@discretionary
+  \hologo{TeX}%
+}
+\def\LMTX{\textsf{LMTX}}
+\let\lmtx\LMTX
+
+\def\LyX{\hologo{LyX}}
+\def\METAFONT{\hologo{METAFONT}}
+\let\MF\METAFONT
+\def\MetaFun{\textffm{METAFUN}}
+\let\MFun\MetaFun
+\def\METAPOST{\hologo{METAPOST}}
+\def\MetaPost{\hologo{MetaPost}}
+\let\MP\METAPOST
+\def\MiKTeX{\hologo{MiKTeX}}
+\def\NTS{\hologo{NTS}}
+\def\OzMF{\hologo{OzMF}}
+\def\OzMP{\hologo{OzMP}}
+\def\OzTeX{\hologo{OzTeX}}
+\def\OzTtH{\hologo{OzTtH}}
+\def\PCTeX{\hologo{PCTeX}}
+\def\pdfTeX{\hologo{pdfTeX}}
+\let\pdftex\pdfTeX
+\def\pdfLaTeX{\hologo{pdfLaTeX}}
+\let\pdflatex\pdfLaTeX
+\def\PiC{\hologo{PiC}}
+\def\PiCTeX{\hologo{PiCTeX}}
+\def\plainTeX{\hologo{plainTeX}}
+\def\PostScript{Post\-Script}
+\let\PS\PostScript
+\def\SageTeX{\hologo{SageTeX}}
+\def\SLiTeX{\hologo{SLiTeX}}
+\def\teTeX{\hologo{teTeX}}
+\def\TeXivht{\hologo{TeX4ht}}
+\def\tex4ht{\hologo{TeX4ht}}
+\def\TTH{\hologo{TTH}}
+\def\virTeX{\hologo{virTeX}}
+\def\VTeX{\hologo{VTeX}}
+\def\XeLaTeX{\hologo{XeLaTeX}}
+\def\XeTeX{\hologo{XeTeX}}
+%%
+%
+\newcommand\BibTool{\textsc{Bib\hskip-.1em
+        T\hskip-.15emo\hskip-.05emo\hskip-.05eml}\xspace}
+\def\tikzlogo{Ti\textit{k}Z}
+\def\ALEPH{\ensuremath{\aleph}}
+\let\TikZ\tikzlogo
+
+\def\eV{e.\kern-0.1em V\kern-0.18em.}
+\def\d@nte{\@ifnextchar.%
+  {\mbox{DANTE e.\kern-0.1em V\kern-0.18em}}% 
+  {\mbox{DANTE e.\kern-0.1em V\kern-0.18em.}\xspace}% 
+}
+\def\D@nte{\@ifnextchar.%
+  {DANTE, Deutschsprachige Anwendervereinigung~\mbox{\TeX~e.\kern-0.1em V\kern-0.18em}}% 
+  {DANTE, Deutschsprachige Anwendervereinigung~\mbox{\TeX~e.\kern-0.1em V\kern-0.18em.}\xspace}% 
+}
+\def\dante#1{%
+  \ifx#1\@empty
+     \d@nte 
+  \else
+     \expandafter\d@nte#1% 
+  \fi}
+
+\def\Dante#1{%
+  \ifx#1\@empty
+     \D@nte 
+  \else
+     \expandafter\D@nte#1% 
+  \fi}
+
+\providecommand\dtk{Die \TeX\-ni\-sche Ko\-mö\-die}
+\providecommand\DTK{``\dtk''}
+\providecommand\PS{Post\-Script}
+\providecommand\TUG{\TeX{} Users Group}
+\providecommand\TUGboat{\textsl{TUGboat}}
+\let\DANTE\dantelogo
+\def\pgf/tikz{pgf/Ti\textit{k}Z}
+\def\pgftikz{pgf/Ti\textit{k}Z}
+\def\TeXLive{\TeX{}Live\xspace}
+
+\def\CTAN{\textsf{CTAN}\xspace}
+
+\def\PSTricks{\textsf{PSTricks}\xspace}
+\let\pstricks\PSTricks
+
+\if@dtk@newengine
+  \newfontfamily\dtk@LinWikipedia{Linux Libertine O}%
+  \def\WikipediA{{\dtk@LinWikipedia\char"E02F\textsc{ikipediA}}} % hexadezimal
+\else
+  \def\WikipediA{WikipediA}%
+\fi
+\let\Wikipedia\WikipediA
+\let\wikipedia\WikipediA
+%
+\def\macOS{\textsf{macOS}\xspace}
+
+\def\PurdueThesis{P\kern-0.15ex urdue\kern-0.05ex T\kern-0.1ex hesis}
+\let\purduethesis = \PurdueThesis
+\def\PuTh{P\kern-0.15ex u\kern-0.05ex T\kern-0.1ex h}
+\let\puth = \PuTh
+
+
+
+
+\endinput

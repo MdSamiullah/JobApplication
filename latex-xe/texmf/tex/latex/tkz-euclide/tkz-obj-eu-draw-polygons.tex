@@ -1,0 +1,134 @@
+% tkz-obj-eu-polygons.tex
+% Copyright 2022  Alain Matthes
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% This work has the LPPL maintenance status “maintained”.
+% The Current Maintainer of this work is Alain Matthes.
+
+\def\fileversion{4.03}
+\def\filedate{2022/01/19} 
+\typeout{2022/01/19 4.03 tkz-obj-eu-polygons.tex} 
+\makeatletter  
+%<--------------------------------------------------------------------------–>
+%                                 Polygon 
+%<--------------------------------------------------------------------------–>
+%<----------------------------   Draw       --------------------------------–>
+%
+%<--------------------------------------------------------------------------–>
+\def\tkzDrawPolygon{\pgfutil@ifnextchar[{\tkz@DrawPolygon}{%
+                                         \tkz@DrawPolygon[]}}
+\def\tkz@DrawPolygon[#1](#2,#3){%
+ \begingroup
+ \draw[line style,#1] (#2)
+     \foreach \pt in {#2,#3}{--(\pt)}--cycle;%
+ \endgroup
+} 
+%<--------------------------------------------------------------------------–>
+\def\tkz@multipolygons#1 #2\@nil{% 
+\protected@edef\tkz@temp{
+\noexpand \tkzDrawPolygon[\tkz@optpolygon](#1)}\tkz@temp% 
+\def\tkz@nextArg{#2}%
+\ifx\tkzutil@empty\tkz@nextArg
+     \let\next\@gobble
+\fi
+\next#2\@nil
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDrawPolygons{\pgfutil@ifnextchar[{\tkz@DrawPolygons}{\tkz@DrawPolygons[]}} 
+\def\tkz@DrawPolygons[#1](#2){%
+\xdef\tkz@optpolygon{#1} 
+\begingroup
+   \let\next\tkz@multipolygons
+   \next#2 \@nil %    
+\endgroup     
+}% 
+%<--------------------------------------------------------------------------–>
+%<--------------------------------------------------------------------------–> 
+%<----------------------------   FILL       --------------------------------–>
+%
+%<--------------------------------------------------------------------------–>
+\def\tkzFillPolygon{\pgfutil@ifnextchar[{\tkz@FillPolygon}{%
+                                         \tkz@FillPolygon[]}} 
+\def\tkz@FillPolygon[#1](#2,#3){%
+ \begingroup
+     \fill[#1] (#2)
+   \foreach \pt in {#2,#3}{--(\pt)}--cycle;%  
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDrawSquare{\pgfutil@ifnextchar[{\tkz@DrawSquare}{\tkz@DrawSquare[]}} 
+\def\tkz@DrawSquare[#1](#2,#3){%
+\begingroup
+   \tkzDefSquare(#2,#3)
+   \tkzDrawPolygon[#1](#2,#3,tkzFirstPointResult,tkzSecondPointResult)
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDrawRectangle{\pgfutil@ifnextchar[{\tkz@DrawRectangle}%
+                      {\tkz@DrawRectangle[]}} 
+\def\tkz@DrawRectangle[#1](#2,#3){%
+\begingroup
+   \draw[#1](#2) -| (#3) -| (#2);
+\endgroup
+}
+%<-------------------------- gold rectangle -------------------------------–>
+%
+%<--------------------------------------------------------------------------–>
+\def\tkzDrawGoldRectangle{\pgfutil@ifnextchar[{\tkz@DrawGoldRectangle}{%
+                                            \tkz@DrawGoldRectangle[]}} 
+\def\tkz@DrawGoldRectangle[#1](#2,#3){
+\begingroup
+  \tkzDefGoldRectangle(#2,#3)
+  \tkzDrawPolygon[#1](#2,#3,tkzFirstPointResult,tkzSecondPointResult)
+\endgroup
+}
+\let\tkzDrawGoldenRectangle\tkzDrawGoldRectangle
+%<--------------   Labels for Regular Polygon      -------------------------–>
+%
+%<--------------------------------------------------------------------------–>
+\pgfkeys{/deflabelregpoly/.cd,
+      name/.store in      =   \tkz@regpolname,
+      sep/.store in       =   \tkz@regpolsep,
+      name        = P,
+      sep         = 1.1
+}   
+ 
+\def\tkzLabelRegPolygon{\pgfutil@ifnextchar[{\tkz@labelPolygon}{%
+                                             \tkz@labelPolygon[]}}  
+\def\tkz@labelPolygon[#1](#2)#3{% 
+\begingroup 
+\pgfqkeys{/deflabelregpoly}{#1}  
+ \foreach \v [count=\vi from 1]  in {#3}  {%
+  \path (#2) to [pos=1.1] node {$\v$} (\tkz@regpolname\vi) ; 
+  \pgfnodealias{\v}{\tkz@regpolname\vi} 
+  } 
+\endgroup
+} 
+%<----------------------------   CLIP       --------------------------------–>
+%
+%<--------------------------------------------------------------------------–>
+
+\newif\iftkzClipOutPoly% 
+\pgfkeys{tkzclippolygon/.cd,
+       out code/.is if         = tkzClipOutPoly,
+       out/.code               = \tkzClipOutPolyfalse}   
+
+\def\tkzClipPolygon{\pgfutil@ifnextchar[{\tkz@ClipPolygon}{\tkz@ClipPolygon[]}}  
+\def\tkz@ClipPolygon[#1](#2,#3){%
+\tkzClipOutPolytrue
+\pgfqkeys{/tkzclippolygon}{#1}%   
+\iftkzClipOutPoly
+\clip (#2)
+   \foreach \pt in {#2,#3}{--(\pt)}--cycle;
+\else
+   \clip(#2)
+    \foreach \pt in {#2,#3}{--(\pt)}--cycle[tkzreverseclip] ;
+\fi 
+}%
+\makeatother
+\endinput

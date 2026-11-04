@@ -1,0 +1,183 @@
+%%
+%% This is file `ProjLib.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{ProjLib}
+    [2021/12/16 The collective interface of ProjLib toolkit]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{
+    family = @ProjLib,
+    prefix = @ProjLib@,
+}
+\DeclareBoolOption[false]{draft}
+\DeclareBoolOption[false]{fast}
+\DeclareBoolOption[false]{author}
+\DeclareBoolOption[false]{amsfashion}
+\DeclareBoolOption[false]{nothms}
+\DeclareBoolOption[false]{delaythms}
+\DeclareBoolOption[false]{nothmnum}
+\DeclareStringOption{thmnum}[PJL@thmnum@default]
+\DeclareBoolOption[true]{regionalref}
+\DeclareBoolOption[false]{originalref}
+\DeclareBoolOption[true]{complexname}
+\DeclareBoolOption[false]{simplename}
+\DeclareBoolOption[false]{useosf}
+\DeclareBoolOption[false]{lmodern}
+\DeclareBoolOption[false]{palatino}
+\DeclareBoolOption[false]{times}
+\DeclareBoolOption[false]{garamond}
+\DeclareBoolOption[false]{noto}
+\DeclareBoolOption[false]{biolinum}
+\ProcessKeyvalOptions*\relax
+
+\if@ProjLib@originalref
+    \@ProjLib@regionalreffalse
+\fi
+\if@ProjLib@simplename
+    \@ProjLib@complexnamefalse
+\fi
+\if@ProjLib@draft
+    \@ProjLib@fasttrue
+\fi
+
+\if@ProjLib@fast
+    \PassOptionsToPackage{fast}{PJLdate}
+    \PassOptionsToPackage{fast}{PJLdraft}
+    \PassOptionsToPackage{fast}{PJLlogo}
+    \PassOptionsToPackage{fast}{PJLthm}
+\fi
+\if@ProjLib@nothms
+    \PassOptionsToPackage{nothms}{PJLthm}
+\fi
+\if@ProjLib@delaythms
+    \PassOptionsToPackage{delaythms}{PJLthm}
+\fi
+\if@ProjLib@nothmnum
+    \PassOptionsToPackage{nothmnum}{PJLthm}
+\fi
+\expandafter\ifstrempty\expandafter{\@ProjLib@thmnum}{}{
+    \expandafter\ifstrequal\expandafter{\@ProjLib@thmnum}{PJL@thmnum@default}{
+        \PassOptionsToPackage{thmnum}{PJLthm}
+    }{
+        \PassOptionsToPackage{thmnum=\@ProjLib@thmnum}{PJLthm}
+    }
+}
+\if@ProjLib@regionalref\else
+    \PassOptionsToPackage{originalref}{PJLthm}
+\fi
+\if@ProjLib@complexname\else
+    \PassOptionsToPackage{simplename}{PJLthm}
+\fi
+
+\if@ProjLib@amsfashion
+    \PassOptionsToPackage{amsfashion}{PJLauthor}
+    \RequirePackage{PJLauthor}
+\fi
+\if@ProjLib@author
+    \RequirePackage{PJLauthor}
+\fi
+\RequirePackage{PJLdate}
+\RequirePackage{PJLdraft}
+\RequirePackage{PJLlogo}
+\RequirePackage{PJLmath}
+\RequirePackage{PJLpaper}
+\RequirePackage{PJLthm}
+
+\ifdefined\PJL@font@alreadyset\else
+
+\if@ProjLib@lmodern
+    \RequirePackage{amssymb}
+    \if@ProjLib@useosf
+        \RequirePackage{cfr-lm}
+    \else
+        \RequirePackage{lmodern}
+    \fi
+    \PJLsetlinespacing{\setstretch{1.00}}
+\fi
+
+\if@ProjLib@palatino
+    % \RequirePackage{amssymb}
+    \RequirePackage{mathpazo}
+    \PassOptionsToPackage{defaultsups}{newpxtext}
+    \RequirePackage{newpxtext}
+    % \RequirePackage{newpxmath}
+    \let\openbox\relax
+    \PJLsetlinespacing{\setstretch{1.07}}
+    \if@ProjLib@useosf\useosf\fi
+\fi
+
+\if@ProjLib@times
+    % \RequirePackage{amssymb}
+    \PassOptionsToPackage{defaultsups}{newtxtext}
+    \RequirePackage{newtxtext}
+    \RequirePackage{newtxmath}
+    \let\openbox\relax
+    \PJLsetlinespacing{\setstretch{1.00}}
+    \if@ProjLib@useosf\useosf\fi
+\fi
+
+\if@ProjLib@garamond
+    % \RequirePackage{amssymb}
+    \if@ProjLib@useosf\else
+        \PassOptionsToPackage{lining}{ebgaramond}
+    \fi
+    \RequirePackage{ebgaramond-maths}
+    \RequirePackage{ebgaramond}
+    % \RequirePackage{garamondlibre}
+    \PJLsetlinespacing{\setstretch{1.00}}
+\fi
+
+\if@ProjLib@noto
+    \if@ProjLib@useosf
+        \PassOptionsToPackage{oldstyle}{notomath}
+    \fi
+    \RequirePackage{anyfontsize}
+    \RequirePackage{notomath}
+    \PJLsetlinespacing{\setstretch{1.00}}
+\fi
+
+\if@ProjLib@biolinum
+    % \RequirePackage{amssymb}
+    % \RequirePackage{mathpazo}
+    % \RequirePackage[sansmath]{libertinust1math}
+    \ifPDFTeX
+        \if@ProjLib@useosf
+            \PassOptionsToPackage{osf}{biolinum}
+        \fi
+        \RequirePackage{biolinum}
+        \renewcommand*\familydefault{\biolinum@family}
+    \else
+        \PassOptionsToPackage{no-math}{fontspec}
+        \RequirePackage{fontspec}
+        \setmainfont{LinBiolinum_R.otf}[
+            BoldFont       = LinBiolinum_RB.otf ,
+            ItalicFont     = LinBiolinum_RI.otf ,
+            BoldItalicFont = LinBiolinum_RBO.otf,
+            \if@ProjLib@useosf Numbers = OldStyle\fi ]
+    \fi
+    \PJLsetlinespacing{\setstretch{1.05}}
+    \RequirePackage[italic,defaultmathsizes]{mathastext}
+\fi
+
+\fi
+
+\RequirePackage{microtype}
+
+\endinput
+%%
+%% End of file `ProjLib.sty'.

@@ -1,0 +1,148 @@
+% tkz-obj-eu-circles.tex
+% Copyright 2022  Alain Matthes
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% This work has the LPPL maintenance status “maintained”.
+% The Current Maintainer of this work is Alain Matthes.
+
+\def\fileversion{4.03}
+\def\filedate{2022/01/19} 
+\typeout{2022/01/19 4.03 tkz-obj-eu-circles.tex} 
+\makeatletter
+%<--------------------------------------------------------------------------–>
+%            tkzCircle center and one point 
+%<--------------------------------------------------------------------------–>
+% attention radius circle is defined by center and a point on the circle
+% R defined by center and the value of the radius
+% no need to define a circle with R tikz uses this method.
+% through instead of radius
+\def\tkz@numcby{0}
+\pgfkeys{/tkzDefCircleBy/.cd,
+  translation/.code args = {from #1 to #2} {             \def\tkz@numcby{0}
+                                                         \def\tkzfrom{#1}
+                                                         \def\tkzto{#2}},
+  homothety/.code args = {center #1 ratio #2}{           \def\tkz@numcby{1}
+                                                         \def\tkzcenter{#1}
+                                                         \def\tkzratio{#2}},
+  reflection/.code args = {over #1--#2}{                 \def\tkz@numcby{2}
+                                                         \def\tkzdeb{#1}
+                                                         \def\tkzfin{#2}},
+  symmetry/.code args = {center #1}{                     \def\tkz@numcby{3}
+                                                         \def\tkzcenter{#1}},
+  rotation/.code args = {center #1 angle #2}{            \def\tkz@numcby{4}
+                                                         \def\tkzcenter{#1}
+                                                         \def\tkzangle{#2}},
+  orthogonal from/.code args     = {#1}{                 \def\tkz@numcby{5}
+                                                         \def\tkz@ptfrom{#1}}, 
+  orthogonal through/.code args  = {#1 and #2}{          \def\tkz@numcby{6}
+                                                         \def\tkz@ptone{#1}
+                                                         \def\tkz@pttwo{#2}},
+  inversion/.code args={center #1 through #2}{           \def\tkz@numcby{7}
+                                                         \def\tkzcenter{#1}
+                                                         \def\tkzpoint{#2}},
+  inversion negative/.code args = {center #1 through #2}{\def\tkz@numcby{8}
+                                                         \def\tkzcenter{#1}
+                                                         \def\tkzpoint{#2}}
+      } 
+\def\tkzDefCircleBy{\pgfutil@ifnextchar[{\tkz@DefCircleBy}{\tkz@DefCircleBy[]}}
+\def\tkz@DefCircleBy[#1](#2){% 
+\begingroup  
+\pgfqkeys{/tkzDefCircleBy}{#1}  
+\ifcase\tkz@numcby%
+  \tkzDefCircleTranslation(#2)%
+  \or% 1 
+  \tkzDefCircleHomothety(#2)  
+  \or% 2
+  \tkzDefCircleReflection(#2) 
+  \or% 3
+  \tkzDefCircleSymmetry(#2) 
+  \or% 4
+  \tkzDefCircleRotation(#2) 
+  \or% 5
+  \tkzDefOrthogonalCircle(#2,\tkz@ptfrom) 
+  \or% 6
+  \tkzDefOrthoThroughCircle(#2,\tkz@ptone,\tkz@pttwo)
+  \or% 7
+  \tkzDefInversionCircle(#2,\tkzcenter,\tkzpoint) 
+  \or% 8
+ \tkzDefInversionNegativeCircle(#2,\tkzcenter,\tkzpoint) 
+     \fi    
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDefCircleTranslation(#1,#2){%
+\begingroup 
+   \tkzUTranslation(\tkzfrom,\tkzto)(#1)
+   \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+   \tkzUTranslation(\tkzfrom,\tkzto)(#2)
+   \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}  
+%<--------------------------------------------------------------------------–>
+\def\tkzDefCircleHomothety(#1,#2){%
+\begingroup 
+   \tkzUHomo(\tkzcenter,\tkzratio)(#1)
+   \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+   \tkzUHomo(\tkzcenter,\tkzratio)(#2)
+   \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDefCircleReflection(#1,#2){%
+\begingroup 
+   \tkzUSymOrth(\tkzdeb,\tkzfin)(#1) 
+   \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+  \tkzUSymOrth(\tkzdeb,\tkzfin)(#2) 
+   \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDefCircleSymmetry(#1,#2){%
+\begingroup 
+   \tkzUCSym(\tkzcenter)(#1)
+   \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+   \tkzUCSym(\tkzcenter)(#2)
+   \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDefCircleRotation(#1,#2){%
+\begingroup 
+   \tkzURotateAngle(\tkzcenter,\tkzangle)(#1)
+    \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+    \tkzURotateAngle(\tkzcenter,\tkzangle)(#2)
+    \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+\def\tkzDefInversionCircle(#1,#2,#3,#4){%  
+\begingroup
+   \tkzInterLC(#3,#1)(#1,#2) \tkzGetPoints{tkz@p1}{tkz@p2}
+   \tkzUInversePoint(#3,#4)(tkz@p1)
+    \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+    \tkzUInversePoint(#3,#4)(tkz@p2)
+    \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+} 
+%<--------------------------------------------------------------------------–>
+\def\tkzDefInversionNegativeCircle(#1,#2,#3,#4){%
+\begingroup
+   \tkzInterLC(#3,#1)(#1,#2) \tkzGetPoints{tkz@p1}{tkz@p2}
+   \tkzUInversePoint(\tkzcenter,\tkzpoint)(tkz@p1)
+   \tkzUCSym(\tkzcenter)(tkzPointResult)
+   \pgfnodealias{tkzFirstPointResult}{tkzPointResult}
+   \tkzUInversePoint(\tkzcenter,\tkzpoint)(tkz@p2)
+   \tkzUCSym(\tkzcenter)(tkzPointResult)
+   \pgfnodealias{tkzSecondPointResult}{tkzPointResult}
+\endgroup
+}
+%<--------------------------------------------------------------------------–>
+%              End Def Circle
+%<--------------------------------------------------------------------------–>  
+\makeatother 
+\endinput

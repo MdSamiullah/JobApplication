@@ -1,0 +1,305 @@
+%%
+%% This is file `hep-math.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% hep-math-implementation.dtx  (with options: `package')
+%% This is a generated file.
+%% Copyright (C) 2019-2020 by Jan Hajer
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3c of this license or (at your option) any later
+%% version. The latest version of this license is in:
+%% http://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{hep-math}[2021/09/01 v1.0 Math and physics macros]
+
+\RequirePackage{mathtools}
+\allowdisplaybreaks[1]
+\thickmuskip=5mu plus 3mu minus 1mu
+\medmuskip=4mu plus 2mu minus 3mu
+\RequirePackage{xparse}
+\DeclareDocumentCommand{\mathdef}{mO{0}m}{%
+  \expandafter\let\csname hep@text\string#1\endcsname=#1
+  \expandafter\newcommand\csname hep@math\string#1\endcsname[#2]{#3}
+  \DeclareRobustCommand#1{%
+    \ifmmode
+      \expandafter\let\expandafter\next\csname%
+      hep@math\string#1\endcsname%
+    \else
+      \expandafter\let\expandafter\next\csname%
+      hep@text\string#1\endcsname%
+    \fi
+    \next
+  }%
+}
+\AtBeginDocument{\mathdef{\i}{\operatorname{i}}}
+\RequirePackage{soulutf8}
+\newcommand\textoverline[1]{{\setul{-1.9ex}{}\ul{#1}}}
+\let\overline\textoverline
+\DeclareRobustCommand{\over@line}[1]{\@@overline{#1}}
+\mathdef{\overline}{\over@line}
+\newcommand{\oset}[3][-1pt]{%
+  \text{\raisebox{.2ex}{$\mathop{#3}\limits^{%
+    \vbox to#1{\kern-2\ex@\hbox{$\scriptscriptstyle#2$}\vss}%
+  }$}}%
+}
+\newcommand{\overleft}[1]{\oset{\leftarrow}{#1}}
+\newcommand{\overright}[1]{\oset{\rightarrow}{#1}}
+\newcommand{\overleftright}[1]{\oset{\leftrightarrow}{#1}}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\erf}{erf}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\diag}{diag}
+\let\det\relax\DeclareMathOperator{\det}{det}
+
+\let\Re\relax\DeclareMathOperator{\Re}{Re}
+\let\Im\relax\DeclareMathOperator{\Im}{Im}
+
+\newcommand*{\hep@transpose}[2]{\raisebox{\depth}{$\m@th#1\intercal$}}
+\newcommand*{\transpose}{{\mathpalette\hep@transpose{}}}
+\let\trans\transpose
+
+\let\cos\undefined\DeclareMathOperator{\cos}{cos\vphantom{i}}
+\let\tan\undefined\DeclareMathOperator{\tan}{tan\vphantom{i}}
+\DeclareMathOperator{\arccsc}{arccsc}
+\DeclareMathOperator{\arcsec}{arcsec}
+\DeclareMathOperator{\arccot}{arccot}
+\DeclareMathOperator{\asin}{asin}
+\DeclareMathOperator{\acos}{acos}
+\DeclareMathOperator{\atan}{atan}
+\DeclareMathOperator{\acsc}{acsc}
+\DeclareMathOperator{\asec}{asec}
+\DeclareMathOperator{\acot}{acot}
+\DeclareMathOperator{\csch}{csch}
+\DeclareMathOperator{\sech}{sech}
+\RequirePackage{units}
+\newcommand{\inv}[2][1]{#2\ensuremath{^{-#1}}}
+\newcommand{\textfrac}[2]{\ensuremath{\nicefrac{\text{#1}}{\text{#2}}}}
+\DeclarePairedDelimiterX{\hep@flatfrac}[2]{.}{.}{%
+  #1\delimsize/\hep@left@delim#2%
+}
+\NewDocumentCommand{\flatfrac}{somm}{%
+  \IfBooleanTF{#1}{%
+    \hep@flatfrac*{#3}{#4}%
+  }{%
+    \IfNoValueTF{#2}{\,\hep@left@delim#3/\hep@left@delim#4\,%
+    }{%
+      \hep@flatfrac[#2]{#3}{#4}%
+    }%
+  }%
+}
+\newcommand{\differential}[1]{\mathop{}\!#1}
+\newcommand\newderivative[2]{
+  \NewDocumentCommand{#1}{somse{^}}{%
+    \IfBooleanTF{##4}{%
+      \IfBooleanTF{##1}{\nicefrac}{\frac}%
+    }{%
+      \IfBooleanTF{##1}{\flatfrac}{\dfrac}%
+    }{%
+      \differential#2\IfValueT{##5}{^{##5\!}}\IfValueT{##2}{##2}%
+    }{%
+      \differential#2{##3}\IfValueT{##5}{^{##5}}%
+    }%
+  }
+}
+\newcommand\newpartialderivative[2]{
+  \NewDocumentCommand{#1}{somsE{^}{1}oE{^}{1}oE{^}{1}}{%
+    \def\hep@one{\IfValueTF{##6}{##7}{0}}
+    \def\hep@two{\IfValueTF{##8}{##9}{0}}
+    \def\hep@sum{\the\numexpr##5+\hep@one+\hep@two\relax}
+    \IfBooleanTF{##4}{%
+      \IfBooleanTF{##1}{\nicefrac}{\frac}%
+    }{%
+      \IfBooleanTF{##1}{\flatfrac}{\dfrac}%
+    }{%
+      \differential#2\ifnum\hep@sum=1\relax\else{^{\hep@sum\!}}\fi
+      \IfValueT{##2}{##2}%
+    }{%
+      \differential#2{##3}\ifnum##5=1\relax\else{^{##5}}\fi%
+      \IfValueT{##6}{#2##6\ifnum##7=1\relax\else{^{##7}}\fi}%
+      \IfValueT{##8}{#2##8\ifnum##9=1\relax\else{^{##9}}\fi}%
+    }%
+  }
+}
+\providecommand{\diffsymbol}{d}
+\newcommand{\diff}{\differential\diffsymbol}
+\AtBeginDocument{\mathdef{\d}{\diff}}
+\newderivative{\derivative}{\diffsymbol}
+\newcommand\dv{\derivative}
+\newcommand\partialdifferential{\differential\partial}
+\newcommand\pd{\partialdifferential}
+\newpartialderivative{\partialderivative}{\partial}
+\newcommand\pdv{\partialderivative}
+\providecommand{\gaugediffsymbol}{D}
+\newcommand{\gaugediff}{\differential\gaugediffsymbol}
+\newcommand{\D}{\gaugediff}
+\newcommand{\covariantdiff}{\differential\nabla}
+\newcommand{\cd}{\covariantdiff}
+\newcommand\variation{\differential\delta}
+\newcommand\var{\variation}
+\newpartialderivative{\functionalderivative}{\delta}
+\newcommand\fdv{\functionalderivative}
+\RequirePackage{cancel}
+\RequirePackage{slashed}
+\declareslashed{}{/}{.06}{0}{\D}
+\declareslashed{}{/}{.055}{0}{\pd}
+\RequirePackage{mleftright}
+\mleftright
+\newcommand{\noargumentsymbol}{\:\cdot\:}
+\newcommand{\optionalargument}[1]{\ifblank{#1}{\noargumentsymbol}{#1}}
+\DeclarePairedDelimiterX\abs[1]\lvert\rvert{\optionalargument{#1}}
+\DeclarePairedDelimiterX\hep@norm[1]\lVert\rVert{\optionalargument{#1}}
+\DeclarePairedDelimiterXPP\hep@pnorm[2]{}\lVert\rVert{_{#1}}{#2}
+\NewDocumentCommand{\norm}{som}{%
+  \IfValueTF{#2}{%
+    \IfBooleanTF{#1}{\hep@pnorm*}{\hep@pnorm}{#2}%
+  }{%
+    \IfBooleanTF{#1}{\hep@norm*}{\hep@norm}%
+  }{\optionalargument{#3}}%
+}
+
+\providecommand{\ordersymbol}{\mathcal{O}}
+\DeclarePairedDelimiterXPP\order[1]{\ordersymbol}(){}{#1}
+
+\DeclarePairedDelimiter{\hep@evaluated}{.}{\rvert}
+\NewDocumentCommand{\evaluated}{som}{%
+  \IfBooleanTF{#1}{%
+    \hep@evaluated*{#3}%
+  }{%
+    \IfNoValueTF{#2}{#3\rvert}{\hep@evaluated[#2]{#3}}%
+  }%
+}
+\newcommand\eval{\evaluated}
+
+\newcommand*{\rowseperator}{,\,}
+\ExplSyntaxOn
+\newcommand*{\hep@row}[1]{
+ \seq_set_split:Nnn\hep@seq{,}{#1}
+ \begin{matrix}\seq_use:Nn\hep@seq{\rowseperator}\end{matrix}
+}
+\newcommand*{\hep@column}[1]{%
+ \seq_set_split:Nnn\hep@seq{,}{#1}%
+ \begin{matrix}\seq_use:Nn\hep@seq{\\}\end{matrix}%
+}
+\ExplSyntaxOff
+\DeclarePairedDelimiterX{\row}[1]{(}{)}{\hep@row{#1}}
+\NewDocumentCommand{\column}{me{^}e{_}}{%
+  \left(\hep@column{#1}\right)\IfValueT{#2}{^{\!\!\!#2}}\IfValueT{#3}{_{\!\!\!#3}}%
+}
+
+\newcommand\hep@left@delim{\mathopen{}}
+\providecommand{\midbar}[1][]{%
+  \nonscript\:#1\vert\allowbreak\nonscript\:\hep@left@delim%
+}
+
+\providecommand\suchthat{\midbar}
+\DeclarePairedDelimiterX\set[1]\{\}{%
+  \renewcommand\suchthat{\midbar[\delimsize]}#1%
+}
+
+\providecommand{\probabilitysymbol}{\operatorname{Pr}}
+\providecommand\given{\midbar}
+\DeclarePairedDelimiterXPP\hep@Pr[1]{%
+  \probabilitysymbol}(){}{%
+  \renewcommand\given{\midbar[\delimsize]}#1%
+}
+\let\Pr\relax
+\NewDocumentCommand{\Pr}{so}{%
+  \IfValueTF{#2}{%
+    \IfBooleanTF{#1}{\hep@Pr*}{\hep@Pr}{#2}%
+  }{%
+    \probabilitysymbol%
+  }%
+}
+
+\NewDocumentCommand{\newpair}{mmme{_}e{^}}{%
+  \IfNoValueTF{#4}{%
+    \IfNoValueTF{#5}{%
+      \DeclarePairedDelimiterX{#1}[2]{#2}{#3}%
+    }{%
+      \DeclarePairedDelimiterXPP{#1}[2]{}{#2}{#3}{^{#5}}%
+    }%
+  }{%
+    \DeclarePairedDelimiterXPP{#1}[2]{}{#2}{#3}{_{#4}}%
+  }{%
+    \optionalargument{##1},\optionalargument{##2}%
+  }%
+}
+\newpair\innerproduct\langle\rangle
+\newpair\poissonbracket\lbrace\rbrace
+\newpair\commutator\lbrack\rbrack
+\newcommand\pb{\poissonbracket}
+\newcommand\comm{\commutator}
+\newcommand\acomm{\poissonbracket}
+\providecommand\braketspace{\mskip1mu}
+\newcommand\hep@midvert{%
+  \braketspace\delimsize\vert\braketspace\hep@left@delim%
+}
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{%
+  \braketspace#1\hep@midvert#2\braketspace%
+}
+
+\DeclarePairedDelimiterXPP\hep@bra[1]{%
+  }{\langle}{\rvert}{\braketspace}{\braketspace#1\braketspace%
+}
+\NewDocumentCommand{\bra}{smt\ket sgt\ketbra sgg}{%
+  \IfBooleanTF{#6}{%
+    \IfBooleanTF{#1}{\braket*{#2}{#8}}{\braket{#2}{#8}}%
+    \IfBooleanTF{#7}{\bra*{#9}}{\bra{#9}}%
+  }{
+    \IfBooleanTF{#3}{%
+      \IfBooleanTF{#1}{\braket*}{%
+        \IfBooleanTF{#4}{\braket*}{\braket}}{#2}{#5%
+      }%
+    }{%
+      \IfBooleanTF{#1}{\hep@bra*}{\hep@bra}{#2}%
+    }%
+  }%
+}
+
+\DeclarePairedDelimiterXPP\ket[1]{%
+  \braketspace}{\lvert}{\rangle}{%
+}{%
+  \braketspace\hep@left@delim#1\braketspace%
+}
+
+\NewDocumentCommand{\ketbra}{smm}{%
+  \IfBooleanTF{#1}{%
+    \ket*{#2}\bra*{#3}%
+  }{%
+    \ket{#2}\bra{#3}%
+  }%
+}
+
+\DeclarePairedDelimiterX\matrixelement[3]{%
+  \langle}{\rangle
+}{%
+  \braketspace#1\hep@midvert#2\hep@midvert#3\braketspace%
+}
+\newcommand\matrixel{\matrixelement}
+\newcommand\mel{\matrixelement}
+
+\DeclarePairedDelimiterX\hep@expvalue[1]{\langle}{\rangle}{%
+  \braketspace#1\braketspace%
+}
+\NewDocumentCommand{\expectationvalue}{som}{%
+  \IfNoValueTF{#2}{%
+    \IfBooleanTF{#1}{\hep@expvalue*}{\hep@expvalue}{#3}%
+  }{%
+    \IfBooleanTF{#1}{\matrixelement*}{\matrixelement}{#2}{#3}{#2}%
+  }%
+}
+\newcommand\ev{\expectationvalue}
+\newcommand\vev[1]{\expectationvalue[0]{#1}}
+
+\endinput
+%%
+%% End of file `hep-math.sty'.

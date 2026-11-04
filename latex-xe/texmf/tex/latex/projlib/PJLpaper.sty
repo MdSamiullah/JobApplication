@@ -1,0 +1,96 @@
+%%
+%% This is file `PJLpaper.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{PJLpaper}
+    [2021/12/16 Paper style configuration]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\RequirePackage{ifthen}
+
+\SetupKeyvalOptions{%
+    family = @PJLpaper,
+    prefix = @PJLpaper@,
+    setkeys=\kvsetkeys
+}
+
+\DeclareStringOption[normal]{paperstyle}
+\DeclareVoidOption{yellowpaper}{\kvsetkeys{@PJLpaper}{paperstyle=yellow}}
+\DeclareVoidOption{darkpaper}{\kvsetkeys{@PJLpaper}{paperstyle=dark}}
+\DeclareVoidOption{nordpaper}{\kvsetkeys{@PJLpaper}{paperstyle=nord}}
+\DeclareBoolOption[false]{preview}
+\ProcessKeyvalOptions*\relax
+
+%%================================
+%% Preview mode
+%%================================
+\ifdefined\PJLnoPreview\else%
+    \if@PJLpaper@preview%
+        \RequirePackage{calc}
+        \AtEndPreamble{%
+        \setlength{\paperwidth}{\textwidth*\real{1.05}}%
+        \setlength{\paperheight}{%
+        (\textheight+\headheight+\headsep+\footskip)*\real{1.05}}%
+        \setlength{\oddsidemargin}{(\paperwidth-\textwidth)/2-1in}%
+        \setlength{\evensidemargin}{(\paperwidth-\textwidth)/2-1in}%
+        \setlength{\topmargin}{(\paperheight-\textheight-\headheight-\headsep-\footskip)/2- 1in}%
+        }
+    \fi
+\fi
+
+%%================================
+%% Paper color
+%%================================
+\RequirePackage{xcolor}
+\definecolor{paper}{RGB}{255,255,255}
+\definecolor{maintext}{RGB}{0,0,0}
+
+\ifthenelse{\equal{\@PJLpaper@paperstyle}{yellow}}
+{
+    \definecolor{paper}{RGB}{247,246,233}
+}
+{\relax}
+
+\ifthenelse{\equal{\@PJLpaper@paperstyle}{dark}}
+{
+    \definecolor{paper}{RGB}{30,30,30}
+    \definecolor{maintext}{RGB}{207,207,207}
+}
+{\relax}
+
+\ifthenelse{\equal{\@PJLpaper@paperstyle}{nord}}
+{
+    \definecolor{paper}{RGB}{46,52,64}
+    \definecolor{maintext}{RGB}{214,220,230}
+}
+{\relax}
+
+\newcommand{\PJLglobalcolor}[1]{%
+    \color{#1}\global\let\default@color\current@color
+}
+
+\pagecolor{paper}
+\PJLglobalcolor{maintext}
+\AtEndPreamble{
+\ifdefined\tcbset%
+    \tcbset{colupper=maintext,collower=maintext}
+\fi
+}
+
+\endinput
+%%
+%% End of file `PJLpaper.sty'.

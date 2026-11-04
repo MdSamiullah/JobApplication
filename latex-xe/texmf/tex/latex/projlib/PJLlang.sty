@@ -1,0 +1,358 @@
+%%
+%% This is file `PJLlang.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{PJLlang}
+    [2021/12/16 Multi-language configuration]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{%
+    family = @PJLlang,
+    prefix = @PJLlang@
+}
+\DeclareBoolOption[false]{polyglossia}
+
+\newif\if@PJLlang@enable@all\@PJLlang@enable@alltrue
+\newif\if@PJLlang@enable@EN\@PJLlang@enable@ENfalse
+\newif\if@PJLlang@enable@FR\@PJLlang@enable@FRfalse
+\newif\if@PJLlang@enable@DE\@PJLlang@enable@DEfalse
+\newif\if@PJLlang@enable@IT\@PJLlang@enable@ITfalse
+\newif\if@PJLlang@enable@PT\@PJLlang@enable@PTfalse
+\newif\if@PJLlang@enable@BR\@PJLlang@enable@BRfalse
+\newif\if@PJLlang@enable@ES\@PJLlang@enable@ESfalse
+\newif\if@PJLlang@enable@CN\@PJLlang@enable@CNfalse
+\newif\if@PJLlang@enable@TC\@PJLlang@enable@TCfalse
+\newif\if@PJLlang@enable@JP\@PJLlang@enable@JPfalse
+\newif\if@PJLlang@enable@RU\@PJLlang@enable@RUfalse
+\def\PJLlang@babeloptions{}
+\DeclareVoidOption{EN}{\@PJLlang@enable@allfalse\@PJLlang@enable@ENtrue\providecommand{\PJLlang@mainlang}{EN}\gpreto{\PJLlang@babeloptions}{,english}}
+\DeclareVoidOption{english}{\@PJLlang@enable@allfalse\@PJLlang@enable@ENtrue\providecommand{\PJLlang@mainlang}{EN}\gpreto{\PJLlang@babeloptions}{,english}}
+\DeclareVoidOption{English}{\@PJLlang@enable@allfalse\@PJLlang@enable@ENtrue\providecommand{\PJLlang@mainlang}{EN}\gpreto{\PJLlang@babeloptions}{,english}}
+\DeclareVoidOption{FR}{\@PJLlang@enable@allfalse\@PJLlang@enable@FRtrue\providecommand{\PJLlang@mainlang}{FR}\gpreto{\PJLlang@babeloptions}{,french}}
+\DeclareVoidOption{french}{\@PJLlang@enable@allfalse\@PJLlang@enable@FRtrue\providecommand{\PJLlang@mainlang}{FR}\gpreto{\PJLlang@babeloptions}{,french}}
+\DeclareVoidOption{French}{\@PJLlang@enable@allfalse\@PJLlang@enable@FRtrue\providecommand{\PJLlang@mainlang}{FR}\gpreto{\PJLlang@babeloptions}{,french}}
+\DeclareVoidOption{DE}{\@PJLlang@enable@allfalse\@PJLlang@enable@DEtrue\providecommand{\PJLlang@mainlang}{DE}\gpreto{\PJLlang@babeloptions}{,ngerman}}
+\DeclareVoidOption{german}{\@PJLlang@enable@allfalse\@PJLlang@enable@DEtrue\providecommand{\PJLlang@mainlang}{DE}\gpreto{\PJLlang@babeloptions}{,ngerman}}
+\DeclareVoidOption{ngerman}{\@PJLlang@enable@allfalse\@PJLlang@enable@DEtrue\providecommand{\PJLlang@mainlang}{DE}\gpreto{\PJLlang@babeloptions}{,ngerman}}
+\DeclareVoidOption{German}{\@PJLlang@enable@allfalse\@PJLlang@enable@DEtrue\providecommand{\PJLlang@mainlang}{DE}\gpreto{\PJLlang@babeloptions}{,ngerman}}
+\DeclareVoidOption{IT}{\@PJLlang@enable@allfalse\@PJLlang@enable@ITtrue\providecommand{\PJLlang@mainlang}{IT}\gpreto{\PJLlang@babeloptions}{,italian}}
+\DeclareVoidOption{italian}{\@PJLlang@enable@allfalse\@PJLlang@enable@ITtrue\providecommand{\PJLlang@mainlang}{IT}\gpreto{\PJLlang@babeloptions}{,italian}}
+\DeclareVoidOption{Italian}{\@PJLlang@enable@allfalse\@PJLlang@enable@ITtrue\providecommand{\PJLlang@mainlang}{IT}\gpreto{\PJLlang@babeloptions}{,italian}}
+\DeclareVoidOption{PT}{\@PJLlang@enable@allfalse\@PJLlang@enable@PTtrue\providecommand{\PJLlang@mainlang}{PT}\gpreto{\PJLlang@babeloptions}{,portuguese}}
+\DeclareVoidOption{portuguese}{\@PJLlang@enable@allfalse\@PJLlang@enable@PTtrue\providecommand{\PJLlang@mainlang}{PT}\gpreto{\PJLlang@babeloptions}{,portuguese}}
+\DeclareVoidOption{Portuguese}{\@PJLlang@enable@allfalse\@PJLlang@enable@PTtrue\providecommand{\PJLlang@mainlang}{PT}\gpreto{\PJLlang@babeloptions}{,portuguese}}
+\DeclareVoidOption{BR}{\@PJLlang@enable@allfalse\@PJLlang@enable@BRtrue\providecommand{\PJLlang@mainlang}{BR}\gpreto{\PJLlang@babeloptions}{,brazilian}}
+\DeclareVoidOption{brazilian}{\@PJLlang@enable@allfalse\@PJLlang@enable@BRtrue\providecommand{\PJLlang@mainlang}{BR}\gpreto{\PJLlang@babeloptions}{,brazilian}}
+\DeclareVoidOption{Brazilian}{\@PJLlang@enable@allfalse\@PJLlang@enable@BRtrue\providecommand{\PJLlang@mainlang}{BR}\gpreto{\PJLlang@babeloptions}{,brazilian}}
+\DeclareVoidOption{ES}{\@PJLlang@enable@allfalse\@PJLlang@enable@EStrue\providecommand{\PJLlang@mainlang}{ES}\gpreto{\PJLlang@babeloptions}{,spanish}}
+\DeclareVoidOption{spanish}{\@PJLlang@enable@allfalse\@PJLlang@enable@EStrue\providecommand{\PJLlang@mainlang}{ES}\gpreto{\PJLlang@babeloptions}{,spanish}}
+\DeclareVoidOption{Spanish}{\@PJLlang@enable@allfalse\@PJLlang@enable@EStrue\providecommand{\PJLlang@mainlang}{ES}\gpreto{\PJLlang@babeloptions}{,spanish}}
+\DeclareVoidOption{CN}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{chinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{Chinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{schinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{SChinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{simplifiedchinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{SimplifiedChinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@CNtrue\providecommand{\PJLlang@mainlang}{CN}}
+\DeclareVoidOption{TC}{\@PJLlang@enable@allfalse\@PJLlang@enable@TCtrue\providecommand{\PJLlang@mainlang}{TC}}
+\DeclareVoidOption{tchinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@TCtrue\providecommand{\PJLlang@mainlang}{TC}}
+\DeclareVoidOption{TChinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@TCtrue\providecommand{\PJLlang@mainlang}{TC}}
+\DeclareVoidOption{traditionalchinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@TCtrue\providecommand{\PJLlang@mainlang}{TC}}
+\DeclareVoidOption{TraditionalChinese}{\@PJLlang@enable@allfalse\@PJLlang@enable@TCtrue\providecommand{\PJLlang@mainlang}{TC}}
+\DeclareVoidOption{JP}{\@PJLlang@enable@allfalse\@PJLlang@enable@JPtrue\providecommand{\PJLlang@mainlang}{JP}\gpreto{\PJLlang@babeloptions}{,japanese}}
+\DeclareVoidOption{japanese}{\@PJLlang@enable@allfalse\@PJLlang@enable@JPtrue\providecommand{\PJLlang@mainlang}{JP}\gpreto{\PJLlang@babeloptions}{,japanese}}
+\DeclareVoidOption{Japanese}{\@PJLlang@enable@allfalse\@PJLlang@enable@JPtrue\providecommand{\PJLlang@mainlang}{JP}\gpreto{\PJLlang@babeloptions}{,japanese}}
+\DeclareVoidOption{RU}{\@PJLlang@enable@allfalse\@PJLlang@enable@RUtrue\providecommand{\PJLlang@mainlang}{RU}\gpreto{\PJLlang@babeloptions}{,russian}}
+\DeclareVoidOption{russian}{\@PJLlang@enable@allfalse\@PJLlang@enable@RUtrue\providecommand{\PJLlang@mainlang}{RU}\gpreto{\PJLlang@babeloptions}{,russian}}
+\DeclareVoidOption{Russian}{\@PJLlang@enable@allfalse\@PJLlang@enable@RUtrue\providecommand{\PJLlang@mainlang}{RU}\gpreto{\PJLlang@babeloptions}{,russian}}
+\ProcessKeyvalOptions*\relax
+
+\ExplSyntaxOn
+\cs_new_protected:cpn { @clearglobaloption } #1
+ {
+  \clist_remove_all:cn { @classoptionslist } { #1 }
+ }
+\ExplSyntaxOff
+
+\@clearglobaloption{chinese}
+\@clearglobaloption{Chinese}
+
+\providecommand{\PJLlang@mainlang}{EN}
+
+\if@PJLlang@enable@all
+    \@PJLlang@enable@ENtrue
+    \@PJLlang@enable@FRtrue
+    \@PJLlang@enable@DEtrue
+    \@PJLlang@enable@ITtrue
+    \@PJLlang@enable@PTtrue
+    \@PJLlang@enable@BRtrue
+    \@PJLlang@enable@EStrue
+    \@PJLlang@enable@CNtrue
+    \@PJLlang@enable@TCtrue
+    \@PJLlang@enable@JPtrue
+    \@PJLlang@enable@RUtrue
+\fi
+
+\newcommand\englishABBR{EN}
+\newcommand\frenchABBR{FR}
+\newcommand\ngermanABBR{DE}
+\newcommand\italianABBR{IT}
+\newcommand\portugueseABBR{PT}
+\newcommand\brazilianABBR{BR}
+\newcommand\spanishABBR{ES}
+\newcommand\schineseABBR{CN}
+\newcommand\tchineseABBR{TC}
+\newcommand\japaneseABBR{JP}
+\newcommand\russianABBR{RU}
+
+\ExplSyntaxOn
+\NewExpandableDocumentCommand{\StrToABBR}{m}
+ {
+  \str_case_e:nn { \str_foldcase:n { #1 } }
+   {
+        {cn}                    {CN}
+        {chinese}               {CN}
+        {schinese}              {CN}
+        {simplifiedchinese}     {CN}
+        {tc}                    {TC}
+        {tchinese}              {TC}
+        {traditionalchinese}    {TC}
+        {jp}                    {JP}
+        {japanese}              {JP}
+        {en}                    {EN}
+        {english}               {EN}
+        {fr}                    {FR}
+        {french}                {FR}
+        {de}                    {DE}
+        {ngerman}               {DE}
+        {it}                    {IT}
+        {italian}               {IT}
+        {pt}                    {PT}
+        {portuguese}            {PT}
+        {br}                    {BR}
+        {brazilian}             {BR}
+        {es}                    {ES}
+        {spanish}               {ES}
+        {german}                {DE}
+        {ru}                    {RU}
+        {russian}               {RU}
+   }
+ }
+
+\NewExpandableDocumentCommand{\StrToTYPE}{m}
+ {
+  \str_case_e:nn { \str_foldcase:n { #1 } }
+   {
+        {cn}                    {CJK}
+        {chinese}               {CJK}
+        {schinese}              {CJK}
+        {simplifiedchinese}     {CJK}
+        {tc}                    {CJK}
+        {tchinese}              {CJK}
+        {traditionalchinese}    {CJK}
+        {jp}                    {CJK}
+        {japanese}              {CJK}
+        {en}                    {Latin}
+        {english}               {Latin}
+        {fr}                    {Latin}
+        {french}                {Latin}
+        {de}                    {Latin}
+        {ngerman}               {Latin}
+        {it}                    {Latin}
+        {italian}               {Latin}
+        {pt}                    {Latin}
+        {portuguese}            {Latin}
+        {br}                    {Latin}
+        {brazilian}             {Latin}
+        {es}                    {Latin}
+        {spanish}               {Latin}
+        {german}                {Latin}
+        {ru}                    {Latin}
+        {russian}               {Latin}
+   }
+ }
+\ExplSyntaxOff
+
+\RequirePackage{iftex}
+\ifPDFTeX
+\RequirePackage[T1]{fontenc}
+\RequirePackage{inputenc}
+\fi
+
+\if@PJLlang@polyglossia
+    \RequirePackage{polyglossia}
+    \setdefaultlanguage{english}
+    \setotherlanguage[frenchpart=false]{french}
+    \setotherlanguage{ngerman}
+    \setotherlanguage{spanish}
+    \setotherlanguage{portuguese}
+    \setotherlanguage[variant=brazilian]{portuguese}
+    \setotherlanguage{italian}
+    \ifPDFTeX\else
+        \setotherlanguage{russian}
+        \setotherlanguage{japanese}
+        \RequirePackage{silence}
+        \WarningFilter{polyglossia}{Asking to add empty feature to latin font(Script="CJK" to scripttag "")}
+    \fi
+\else
+    \if@PJLlang@enable@all
+        \ifPDFTeX\else
+            \PassOptionsToPackage{japanese,russian}{babel}
+        \fi
+        \PassOptionsToPackage{italian,portuguese,brazilian,spanish,es-notilde,es-noquoting,ngerman,french,english,shorthands=off}{babel}
+    \else
+        \PassOptionsToPackage{\PJLlang@babeloptions}{babel}
+    \fi
+    \PassOptionsToPackage{italian,brazilian,spanish,ngerman,french,english}{cleveref}
+    \RequirePackage{babel}
+    \if@PJLlang@enable@FR
+        \frenchsetup{PartNameFull=false}
+    \fi
+    \if@PJLlang@enable@PT
+        \let\PJL@babelord\ord
+        \let\ord\relax
+        \AtBeginDocument{
+            \@ifundefined{ord}{}
+            {
+                \let\PJL@userord\ord
+                \let\ord\relax
+                \newcommand{\ord}{%
+                    \ifmmode\expandafter\PJL@userord\else\expandafter\PJL@babelord\fi%
+                }
+            }
+        }
+    \fi
+
+    \babelprovide{schinese}
+    \babelprovide{tchinese}
+\fi
+
+\let\today@PJLoriginal\today
+\newcommand{\PJLlang@langconfig@common}{%
+    \ifdefined\DTMtoday%
+        \let\today\DTMtoday%
+    \else%
+        \let\today\today@PJLoriginal%
+    \fi%
+}
+
+\newcommand{\PJLlang@langconfig@CN}{%
+    \def\abstractname{摘要}%
+    \def\proofname{证明}%
+    \def\contentsname{目录}%
+    \def\listfigurename{插图}%
+    \def\listtablename{表格}%
+    \def\figurename{图}%
+    \def\tablename{表}%
+    \def\indexname{索引}%
+    \def\appendixname{附录}%
+    \def\refname{参考文献}%
+    \def\bibname{参考文献}%
+    \let\today\zhtoday%
+    \renewcommand{\languagename}{schinese}%
+}
+\newcommand{\PJLlang@langconfig@TC}{%
+    \def\abstractname{摘要}%
+    \def\proofname{證明}%
+    \def\contentsname{目錄}%
+    \def\listfigurename{插圖}%
+    \def\listtablename{表格}%
+    \def\figurename{圖}%
+    \def\tablename{表}%
+    \def\indexname{索引}%
+    \def\appendixname{附錄}%
+    \def\refname{參考文獻}%
+    \def\bibname{參考文獻}%
+    \let\today\zhtoday%
+    \renewcommand{\languagename}{tchinese}%
+}
+\newcommand{\PJLlang@langconfig@JP}{%
+    \selectlanguage{japanese}%
+}
+\newcommand{\PJLlang@langconfig@EN}{%
+    \selectlanguage{english}%
+}
+\newcommand{\PJLlang@langconfig@FR}{%
+    \selectlanguage{french}%
+    \def\frenchpartname{Partie}%
+}
+\newcommand{\PJLlang@langconfig@DE}{%
+    \selectlanguage{ngerman}%
+}
+\newcommand{\PJLlang@langconfig@IT}{%
+    \selectlanguage{italian}%
+}
+\newcommand{\PJLlang@langconfig@PT}{%
+    \selectlanguage{portuguese}%
+}
+\newcommand{\PJLlang@langconfig@BR}{%
+    \selectlanguage{brazilian}%
+}
+\newcommand{\PJLlang@langconfig@ES}{%
+    \selectlanguage{spanish}%
+}
+\newcommand{\PJLlang@langconfig@RU}{%
+    \selectlanguage{russian}%
+}
+
+\NewDocumentCommand\AddLanguageSetting{d()m}{%
+\IfNoValueTF{#1}%
+    {\gappto{\PJLlang@langconfig@common}{#2}}%
+    {\expandafter\gappto\expandafter{\csname PJLlang@langconfig@\StrToABBR{#1}\endcsname}{#2}}%
+}
+
+\RequirePackage{setspace}
+\def\PJL@config@linespacing{\setstretch{1.00}}
+\def\PJL@config@CJKlinespacing{\onehalfspacing}
+\newcommand{\PJLsetlinespacing}[1]{\renewcommand{\PJL@config@linespacing}{#1}}
+\newcommand{\PJLsetCJKlinespacing}[1]{\renewcommand{\PJL@config@CJKlinespacing}{#1}}
+\@ifclassloaded{beamer}{
+    \def\PJL@config@parindent{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{0em}}}
+    \def\PJL@config@CJKparindent{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{0em}}}
+}{
+    \def\PJL@config@parindent{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{1.5em}}}
+    \def\PJL@config@CJKparindent{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{2em}}}
+}
+\newcommand{\PJLsetparindent}[1]{\renewcommand{\PJL@config@parindent}{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{#1}}}}
+\newcommand{\PJLsetCJKparindent}[1]{\renewcommand{\PJL@config@CJKparindent}{\ltx@ifpackageloaded{parskip}{}{\setlength{\parindent}{#1}}}}
+\def\PJL@config@CJK{\PJL@config@CJKlinespacing\PJL@config@CJKparindent}
+\def\PJL@config@Latin{\PJL@config@linespacing\PJL@config@parindent}
+\NewDocumentCommand{\UseLanguageCORE}{m}{%
+    \PJLlang@langconfig@common%
+    \csname PJL@config@\StrToTYPE{#1}\endcsname%
+    \csname PJLlang@langconfig@\StrToABBR{#1}\endcsname%
+}
+\NewDocumentCommand{\UseLanguage}{m}{%
+    \ifx\@onlypreamble\@notprerr%
+        \UseLanguageCORE{#1}%
+    \else%
+        \AfterEndPreamble{\UseLanguageCORE{#1}}%
+    \fi%
+}
+\NewDocumentCommand{\UseOtherLanguage}{mm}{%
+\begingroup\begingroup%
+    \PJLlang@langconfig@common%
+    \csname PJLlang@langconfig@\StrToABBR{#1}\endcsname%
+    #2%
+\endgroup\endgroup%
+}
+
+\expandafter\UseLanguage\expandafter{\PJLlang@mainlang}
+
+\endinput
+%%
+%% End of file `PJLlang.sty'.

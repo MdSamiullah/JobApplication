@@ -2,8 +2,8 @@
  * Built files are listed at build time (scripts/build-sw.mjs) and saved on first visit.
  * Pages: network first, then the saved copy. Built files: saved copy first (their names change with each version).
  * Server requests (/api, the Cloudflare Worker, AI services) are never saved. */
-const VERSION = 'e43c746fc3b4';
-const FILES = ["./","assets/docxTemplate-DLIUHiMA.js","assets/freeTier-DGTniIiR.js","assets/index-9LZuAYlo.js","assets/index-C_CvjQRe.css","assets/pdf.worker.min-BBB_QPOU.js","assets/pdf.worker.min-rsCePomN.mjs","assets/vendor-ClGJ9Wiz.js","assets/worker-BzDtYIsj.js","auth-redirect.html","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","latex/LICENSE-SwiftLaTeX.txt","latex/README.txt","latex/swiftlatexpdftex.js","latex/swiftlatexpdftex.wasm","manifest.webmanifest","index.html"];
+const VERSION = '4bcdd300d17c';
+const FILES = ["./","assets/docxTemplate-DLIUHiMA.js","assets/freeTier-BTo-3Izc.js","assets/index-B32G53-8.js","assets/index-C_CvjQRe.css","assets/latexXe-fqjzcGay.js","assets/pdf.worker.min-BBB_QPOU.js","assets/pdf.worker.min-rsCePomN.mjs","assets/vendor-ClGJ9Wiz.js","assets/worker-BzDtYIsj.js","auth-redirect.html","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","latex/LICENSE-SwiftLaTeX.txt","latex/README.txt","latex/swiftlatexpdftex.js","latex/swiftlatexpdftex.wasm","manifest.webmanifest","index.html"];
 const CACHE = `jobpack-${VERSION}`;
 
 self.addEventListener('install', (e) => {

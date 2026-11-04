@@ -1,0 +1,222 @@
+%%
+%% This is file `styledcmd.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% styledcmd.dtx  (with options: `package')
+%% 
+%% This is a generated file.
+%% 
+%% Styledcmd Handle multiple versions for user-defined macros in LaTeX
+%% Copyright (C) 2021  Paolo De Donato <dedonato95@hotmail.it>
+%% 
+%% Styledcmd is free software: you can redistribute it and/or modify
+%% it under the terms of the GNU General Public License as published by
+%% the Free Software Foundation, either version 3 of the License, or
+%% (at your option) any later version.
+%% 
+%% Styledcmd is distributed in the hope that it will be useful,
+%% but WITHOUT ANY WARRANTY; without even the implied warranty of
+%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%% GNU General Public License for more details.
+%% 
+%% You should have received a copy of the GNU General Public License
+%% along with Styledcmd.  If not, see <https://www.gnu.org/licenses/>.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\RequirePackage{expl3}[2018-04-12]
+\ProvidesExplPackage{styledcmd}{2021/08/20}{1.1}{Command with different styles}
+\RequirePackage{xparse}
+
+\str_const:Nn \c__stycmd_defname_str{ default }
+\str_new:N \l__stycmd_cexp_str
+\str_new:N \l__stycmd_fexp_str
+\cs_new:Npn \__stycmd_cmd:nn #1#2{ __stycmd_command_#1_#2 }
+
+\cs_generate_variant:Nn \__stycmd_cmd:nn { nV }
+\cs_generate_variant:Nn \__stycmd_cmd:nn { VV }
+
+\cs_new:Nn \__stycmd_cmd:
+  {
+    \__stycmd_cmd:VV\l__stycmd_cexp_str\l__stycmd_fexp_str
+  }
+
+\cs_new:Npn \__stycmd_cmddefname:n #1
+  {
+    \__stycmd_cmd:nV { #1 } \c__stycmd_defname_str
+  }
+\msg_new:nnn { stycmd } { noformat }
+  {
+    Style~#2~not~defined~for~command~#1
+  }
+
+\cs_new_protected:Npn\__stycmd_erroring:nn #1#2
+  {
+    \cs_if_free:cT { \__stycmd_cmd:nn {#1} {#2} }
+      { \msg_error:nnnn { stycmd } { noformat } {#1} {#2} }
+  }
+
+\cs_generate_variant:Nn \__stycmd_erroring:nn { nV, VV }
+\msg_new:nnn { stycmd } { deferror }
+  {
+    Cannot~define~a~style~with~name~default
+  }
+
+\cs_new_protected:Nn\__stycmd_deferr:
+  {
+    \str_if_eq:NNT \l__stycmd_fexp_str \c__stycmd_defname_str
+      { \msg_error:nn { stycmd } { deferror }  }
+  }
+\cs_new_protected:Npn \__stycmd_macro_default:nn #1#2
+  {
+    \exp_args:Nc \ProvideDocumentCommand { \__stycmd_cmddefname:n { #1 } }
+      {}
+      {
+        \use:c { \__stycmd_cmd:nn { #1 } { #2 } }
+      }
+  }
+
+\cs_generate_variant:Nn \__stycmd_macro_default:nn { VV }
+\cs_new_protected:Npn \__stycmd_macro_overwrite:nn #1#2
+  {
+    \__stycmd_erroring:nn { #1 } { #2 }
+
+    \exp_args:Nc \RenewDocumentCommand { \__stycmd_cmddefname:n { #1 } }
+      {}
+      {
+        \use:c { \__stycmd_cmd:nn { #1 } { #2 } }
+      }
+  }
+
+\cs_generate_variant:Nn \__stycmd_macro_overwrite:nn { VV }
+\cs_new_protected:Npn \__stycmd_macro_declaration:n #1
+  {
+    \exp_args:Nc \ProvideDocumentCommand { #1 } {o}
+      {
+        \IfNoValueTF {##1}
+          {
+            \use:c { \__stycmd_cmddefname:n { #1 } }
+          }
+          {
+            \str_set:Nx \l__stycmd_fexp_str {##1}
+            \__stycmd_erroring:nV { #1 } \l__stycmd_fexp_str
+            \use:c{ \__stycmd_cmd:nV { #1 } \l__stycmd_fexp_str }
+          }
+      }
+  }
+
+\cs_generate_variant:Nn \__stycmd_macro_declaration:n { V }
+\cs_new_protected:Npn \__stycmd_init_vars:Nn #1#2
+  {
+    \str_set:Nx \l__stycmd_cexp_str { \cs_to_str:N #1 }
+    \str_set:Nx \l__stycmd_fexp_str {#2}
+    \__stycmd_deferr:
+  }
+\cs_new_protected:Npn \stycmd_generate:NN #1#2
+  {
+    \NewDocumentCommand #1 {m m}
+      {
+        \__stycmd_init_vars:Nn { ##1 } { ##2 }
+        \__stycmd_macro_default:VV \l__stycmd_cexp_str \l__stycmd_fexp_str
+        \__stycmd_macro_declaration:V \l__stycmd_cexp_str
+        \exp_args:Nc #2 { \__stycmd_cmd: }
+      }
+  }
+
+\cs_new_protected:Npn \stycmd_generate_renew:NN #1#2
+  {
+    \NewDocumentCommand #1 {m m}
+      {
+        \__stycmd_init_vars:Nn { ##1 } { ##2 }
+        \__stycmd_erroring:VV \l__stycmd_cexp_str \l__stycmd_fexp_str
+        \exp_args:Nc #2 { \__stycmd_cmd: }
+      }
+  }
+\stycmd_generate:NN \newstyledcmd \newcommand
+\stycmd_generate_renew:NN \renewstyledcmd \renewcommand
+\stycmd_generate:NN \providestyledcmd \providecommand
+\stycmd_generate:NN \NewDocStyledCMD \NewDocumentCommand
+\stycmd_generate_renew:NN \RenewDocStyledCMD \RenewDocumentCommand
+\stycmd_generate:NN \ProvideDocStyledCMD \ProvideDocumentCommand
+\NewDocumentCommand \setGlobalStyle{m m}{
+    \__stycmd_init_vars:Nn { #1 } { #2 }
+
+    \__stycmd_macro_overwrite:VV \l__stycmd_cexp_str \l__stycmd_fexp_str
+}
+\str_new:N \l__stycmd_group_str
+\str_new:N \l__stycmd_format_str
+\cs_new:Npn \__stycmd_gvar:n #1 { g__stycmd_glist_#1_seq }
+
+\cs_generate_variant:Nn \__stycmd_gvar:n { V }
+
+\cs_new:Nn \__stycmd_gvar: { \__stycmd_gvar:V \l__stycmd_group_str }
+\cs_new_protected:Npn \__stycmd_push_g:Nn #1#2
+  {
+    \seq_gput_left:cn { \__stycmd_gvar:n { #2 } } { #1 }
+  }
+
+\cs_generate_variant:Nn \__stycmd_push_g:Nn { NV }
+\msg_new:nnn { stycmd } { gnotclosed } { Group~not~closed }
+
+\NewDocumentCommand \styBeginGroup { m }
+  {
+    \str_if_empty:NF \l__stycmd_group_str
+      {
+        \msg_error:nn { stycmd } { gnotclosed }
+      }
+
+    \str_set:Nx \l__stycmd_group_str {#1}
+
+    \seq_if_exist:cF { \__stycmd_gvar: }
+      { \seq_new:c { \__stycmd_gvar: } }
+  }
+\NewDocumentCommand \styEndGroup {}
+  {
+    \str_clear:N \l__stycmd_group_str
+  }
+\msg_new:nnn { stycmd } { fnotclosed } { Format~not~closed }
+
+\NewDocumentCommand \styBeginStyle { m }
+  {
+    \str_if_empty:NF \l__stycmd_format_str
+      {
+        \msg_error:nn { stycmd } { fnotclosed }
+      }
+    \str_set:Nx \l__stycmd_format_str {#1}
+  }
+\NewDocumentCommand \styEndStyle {}
+  {
+    \str_clear:N \l__stycmd_format_str
+  }
+\NewDocumentCommand \newGstyledcmd { m o +m }
+  {
+    \IfNoValueTF {#2}
+      {
+        \newstyledcmd {#1} { \l__stycmd_format_str } {#3}
+      }
+      {
+        \newstyledcmd {#1} { \l__stycmd_format_str } [#2] {#3}
+      }
+    \__stycmd_push_g:NV {#1} \l__stycmd_group_str
+  }
+\NewDocumentCommand \NewGDocStyledCMD { m m +m }
+  {
+    \NewDocStyledCMD {#1} { \l__stycmd_format_str } {#2} {#3}
+
+    \__stycmd_push_g:NV {#1} \l__stycmd_group_str
+  }
+\NewDocumentCommand \setGroupStyle { m m }
+  {
+    \str_set:Nx \l__stycmd_group_str {#1}
+    \str_set:Nx \l__stycmd_format_str {#2}
+    \seq_map_inline:cn { \__stycmd_gvar: }
+      {
+        \setGlobalStyle {##1} { \l__stycmd_format_str }
+      }
+    \str_clear:N \l__stycmd_format_str
+    \str_clear:N \l__stycmd_group_str
+  }
+\endinput
+%%
+%% End of file `styledcmd.sty'.

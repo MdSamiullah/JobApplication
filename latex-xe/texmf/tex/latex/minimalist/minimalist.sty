@@ -1,0 +1,922 @@
+%%
+%% This is file `minimalist/minimalist.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the minimalist class series.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{minimalist}
+    [2021/12/16 A simple and clear style for articles and books]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{%
+    family = @minimalist,
+    prefix = @minimalist@
+}
+\DeclareBoolOption[false]{draft}
+\DeclareBoolOption[false]{fast}
+\DeclareBoolOption[false]{puretext}
+\DeclareBoolOption[false]{nothms}
+\DeclareBoolOption[false]{delaythms}
+\DeclareBoolOption[false]{nothmnum}
+\DeclareStringOption{thmnum}[minimalist@thmnum@default]
+\DeclareBoolOption[true]{regionalref}
+\DeclareBoolOption[false]{originalref}
+\DeclareBoolOption[false]{allowbf}
+\DeclareBoolOption[false]{classical}
+\DeclareBoolOption[false]{runin}
+\ProcessKeyvalOptions*\relax
+
+\if@minimalist@originalref
+    \@minimalist@regionalreffalse
+\fi
+\if@minimalist@draft
+  \@minimalist@fasttrue
+\fi
+\if@minimalist@puretext
+  \@minimalist@nothmstrue
+\fi
+
+\if@minimalist@fast
+    \PassOptionsToPackage{fast}{PJLdraft}
+    \PassOptionsToPackage{fast}{PJLthm}
+\fi
+\expandafter\ifstrempty\expandafter{\@minimalist@thmnum}{}{
+    \expandafter\ifstrequal\expandafter{\@minimalist@thmnum}{minimalist@thmnum@default}{
+        \PassOptionsToPackage{thmnum}{PJLthm}
+    }{
+        \PassOptionsToPackage{thmnum=\@minimalist@thmnum}{PJLthm}
+    }
+}
+\if@minimalist@regionalref\else
+    \PassOptionsToPackage{originalref}{PJLthm}
+\fi
+
+\if@minimalist@allowbf
+    \newcommand{\conditionalbfseries}{\bfseries\colorlet{PJLtempcolor}{.}\color{PJLtempcolor!83!paper}}
+\else
+    \newcommand{\conditionalbfseries}{}
+\fi
+
+\newif\ifIsBook
+\ifdefined\c@chapter\IsBooktrue\else\IsBookfalse\fi
+
+%%================================
+%% Title fonts
+%%================================
+\RequirePackage{anyfontsize}
+
+\def\minimalist@titlefontshape{}
+
+\if@minimalist@classical
+\newcommand{\partfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\chapfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\secfont}{\conditionalbfseries}
+\newcommand{\subsecfont}{\conditionalbfseries}
+\newcommand{\subsubsecfont}{\conditionalbfseries\itshape}
+\else
+\newcommand{\partfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\chapfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\secfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\subsecfont}{\conditionalbfseries\minimalist@titlefontshape}
+\newcommand{\subsubsecfont}{\conditionalbfseries\minimalist@titlefontshape}
+\fi
+
+%%================================
+%% Paper configuration
+%%================================
+\RequirePackage{PJLpaper}
+
+%%================================
+%% Footer
+%%================================
+\RequirePackage{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{extramarks}
+
+\AtEndPreamble{\fancyhfoffset{0pt}}
+
+\fancypagestyle{fancy}{
+    \fancyhf{}
+    \if@twoside
+        \fancyfoot[RO]{\small\textcolor{maintext!30!paper}{\lastrightmark}%
+            ~~\rlap{\textcolor{maintext!27!paper}{$|$}~~\thepage}}
+        \fancyfoot[LE]{\small\leavevmode\llap{\thepage%
+            ~~\textcolor{maintext!27!paper}{$|$}}%
+            ~~\textcolor{maintext!30!paper}{\lastleftmark}}
+    \else
+        \fancyfoot[R]{\small\textcolor{maintext!30!paper}{\lastrightmark}%
+            ~~\rlap{\textcolor{maintext!27!paper}{$|$}~~\thepage}}
+    \fi
+    \renewcommand{\headrulewidth}{0pt}
+}
+\pagestyle{fancy}
+
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \if@twoside
+        \fancyfoot[RO]{\small%
+            ~\rlap{\textcolor{maintext!27!paper}{$|$}~~\thepage}}
+        \fancyfoot[LE]{\small\leavevmode\llap{\thepage%
+            ~~\textcolor{maintext!27!paper}{$|$}}}
+    \else
+        \fancyfoot[R]{\small%
+            ~\rlap{\textcolor{maintext!27!paper}{$|$}~~\thepage}}
+    \fi
+    \renewcommand{\headrulewidth}{0pt}
+}
+\ifbool{IsBook}{
+    \if@minimalist@fast
+    \newcommand{\drawHelpLine}{}
+    \else
+    \RequirePackage{tikz}
+    \usetikzlibrary{calc,shadings}
+    \RequirePackage{tikzpagenodes}% For `current page text area`
+    \newcommand{\drawHelpLine}{%
+        \begin{tikzpicture}[remember picture,overlay]
+            \foreach\i in {0,1,...,5}{%
+                \fill[opacity=0.12-0.02*\i]
+                    ($(current page text area.north east)
+                        +(-\i*0.5em-.025em,-10pt+\i*1.1pt)$)
+                    rectangle ($(current page text area.south east)
+                        +(-\i*0.5em+.025em,10pt-\i*1.1pt)$);
+                \shade[top color=paper,bottom color=maintext,opacity=0.12-0.02*\i]
+                    ($(current page text area.north east)
+                        +(-\i*0.5em-.025em,2pt)$)
+                    rectangle ($(current page text area.north east)
+                        +(-\i*0.5em+.025em,-10pt+\i*1.1pt)$);
+                \shade[top color=maintext,bottom color=paper,opacity=0.12-0.02*\i]
+                    ($(current page text area.south east)
+                        +(-\i*0.5em-.025em,-2pt)$)
+                    rectangle ($(current page text area.south east)
+                        +(-\i*0.5em+.025em,10pt-\i*1.1pt)$);
+            }
+        \end{tikzpicture}%
+    }
+    \fi
+    \fancypagestyle{part}{
+        \fancyhf{}
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[C]{\drawHelpLine}
+    }
+    \addtolength{\headheight}{20pt}
+    \addtolength{\topmargin}{-20pt}
+    \if@twoside
+        \renewcommand{\chaptermark}[1]{\markboth{\textsc{#1}}{}}
+    \else
+        \renewcommand{\chaptermark}[1]{\markboth{\textsc{#1}}{\textsc{#1}}}
+    \fi
+    \renewcommand*{\sectionmark}[1]{%
+        \markright{\sec@decochar~\arabic{section}~\sec@decochar~~~#1}}
+}{
+    \if@twoside
+        \renewcommand*{\sectionmark}[1]{\markboth{\textsc{#1}}{}}
+    \else
+        \renewcommand*{\sectionmark}[1]{\markboth{\textsc{#1}}{\textsc{#1}}}
+    \fi
+}
+%%================================
+%% Languages and line spacing
+%%================================
+\RequirePackage{PJLlang}
+\PJLsetlinespacing{\setstretch{1.07}}
+\PJLsetCJKlinespacing{\onehalfspacing}
+\raggedbottom
+
+%%================================
+%% Line numbers
+%%================================
+\PassOptionsToPackage{pagewise,mathlines}{lineno}
+\RequirePackage{linenoamsmath}
+\renewcommand\linenumberfont{\ttfamily\color{maintext!7!paper}\footnotesize}
+\setlength\linenumbersep{1em}
+
+\newif\ifLNturnsON
+\def\LocallyStopLineNumbers{\LNturnsONfalse%
+    \ifLineNumbers\LNturnsONtrue\fi\nolinenumbers}
+\def\ResumeLineNumbers{\ifLNturnsON\linenumbers\fi}
+
+\pretocmd{\tableofcontents}{\LocallyStopLineNumbers}{}{\FAIL}
+\apptocmd{\tableofcontents}{\ResumeLineNumbers}{}{\FAIL}
+\pretocmd{\thebibliography}{\LocallyStopLineNumbers}{}{\FAIL}
+\apptocmd{\endthebibliography}{\ResumeLineNumbers}{}{\FAIL}
+
+%%================================
+%% Title format
+%%================================
+\RequirePackage[explicit,newparttoc]{titlesec}
+\PassOptionsToPackage{normalem}{ulem}
+\RequirePackage{ulem}
+
+\newcommand{\partstring}{\MakeUppercase{{\partname~\protect\thepart}}}
+\gappto{\PJLlang@langconfig@common}{%
+\renewcommand{\partstring}{\MakeUppercase{{\partname~\protect\thepart}}}%
+}
+\gappto{\PJLlang@langconfig@CN}{%
+\renewcommand{\partstring}{第~\thepart~部分}%
+}
+\gappto{\PJLlang@langconfig@TC}{%
+\renewcommand{\partstring}{第~\thepart~部分}%
+}
+\gappto{\PJLlang@langconfig@JP}{%
+\renewcommand{\partstring}{第~\thepart~部}%
+}
+
+\ifbool{IsBook}{
+    %% Part
+    \titleclass{\part}{top} % make part like a chapter
+    \titleformat{\part}[display]
+        {\thispagestyle{part}%
+        \LocallyStopLineNumbers%
+        \partfont\filleft}
+        {\partstring}
+        {1em}
+        {\fontsize{20}{0}\selectfont\MakeUppercase{#1}}
+        [\ResumeLineNumbers]
+    \titleformat{name=\part,numberless}[display]
+        {\thispagestyle{part}%
+        \LocallyStopLineNumbers%
+        % \phantomsection\addcontentsline{toc}{part}{#1}%
+        \partfont\filleft}
+        {\phantom{\MakeUppercase{\partname}}}
+        {1em}
+        {\fontsize{20}{0}\selectfont\MakeUppercase{#1}}
+        [\ResumeLineNumbers]
+    \titlespacing*{\part}{0pt}{5em}{6em}
+    %% Text after part
+    \newcommand{\parttext}[1]{%
+    \vfill%
+    \LocallyStopLineNumbers%
+    \begin{flushright}%
+        \begin{minipage}{0.833\textwidth}%
+            \color{maintext!80!paper}\raggedleft#1%
+        \end{minipage}%
+    \end{flushright}%
+    \ResumeLineNumbers%
+    \vfill\vfill%
+    \cleardoublepage%
+    }
+
+    %% Chapter
+    \titleformat{\chapter}
+        {\thispagestyle{fancy}%
+        \LocallyStopLineNumbers%
+        \color{maintext!80!paper}\chapfont\fontsize{16}{0}\selectfont}{}{0em}
+        {\rlap{\hspace*{-.5em}{\color{maintext!12!paper}%
+            \fontsize{80}{0}\selectfont\raisebox{-7pt}{\thechapter}}}#1}
+        [\ResumeLineNumbers]
+    \titleformat{name=\chapter,numberless}
+        {\thispagestyle{fancy}%
+        \LocallyStopLineNumbers%
+        % \phantomsection\addcontentsline{toc}{chapter}{#1}%
+        \color{maintext!80!paper}\chapfont\fontsize{16}{0}\selectfont}{}{0em}
+        {\rlap{\hspace*{-.5em}{\color{maintext!12!paper}%
+            \fontsize{80}{0}\selectfont\normalfont\raisebox{-7pt}{*}}}#1}
+        [\ResumeLineNumbers]
+}{
+    %% Part
+    \titleformat{\part}[display]
+        {\LocallyStopLineNumbers%
+        \partfont\filleft}
+        {\partstring}
+        {.3em}
+        {\fontsize{16}{0}\selectfont\MakeUppercase{#1}}
+        [\ResumeLineNumbers]
+    \titleformat{name=\part,numberless}[display]
+        {\LocallyStopLineNumbers%
+        % \phantomsection\addcontentsline{toc}{part}{#1}%
+        \partfont\filleft}
+        {\phantom{\MakeUppercase{\partname}}}
+        {.3em}
+        {\fontsize{16}{0}\selectfont\MakeUppercase{#1}}
+        [\ResumeLineNumbers]
+    %% Text after part
+    \newcommand{\parttext}[1]{%
+        \LocallyStopLineNumbers%
+        \begin{flushright}%
+            \begin{minipage}{0.833\textwidth}%
+                \color{maintext!80!paper}\raggedleft#1%
+            \end{minipage}%
+        \end{flushright}%
+        \ResumeLineNumbers%
+    }
+}
+
+%% Section
+\if@minimalist@classical
+\renewcommand\thesection{\arabic{section}}
+\newcommand\seculine{\bgroup\markoverwith{\color{maintext!27!paper}%
+    \rule[-0.9ex]{2pt}{.6pt}\hspace{-2pt}\rule[-1.2ex]{2pt}{.6pt}}\ULon}
+\newcommand\sec@decochar{\raisebox{.03em}{\normalfont/}}
+\titleformat{\section}
+    {\LocallyStopLineNumbers%
+    \secfont\centering}{}{0em}
+    {{\small\textcolor{maintext!27!paper}{\footnotesize\sec@decochar}%
+        \,\,\textcolor{maintext!90!paper}{\conditionalbfseries\arabic{section}}%
+        \,\,\textcolor{maintext!27!paper}{\footnotesize\sec@decochar}}\\
+        \seculine{#1}}
+    [\ResumeLineNumbers]
+\titleformat{name=\section,numberless}
+    {\LocallyStopLineNumbers%
+    % \phantomsection\addcontentsline{toc}{section}{#1}%
+    \secfont\centering}{}{0em}
+    {\seculine{#1}}
+    [\ResumeLineNumbers]
+\else
+\newcommand\sec@decochar{}
+\titleformat{\section}
+    {\LocallyStopLineNumbers%
+    \secfont\centering}
+    {\thesection}{.75em}
+    {#1}
+    [\ResumeLineNumbers]
+\fi
+
+%% Subsection
+\if@minimalist@classical
+\renewcommand\thesubsection{%
+    \ifnum\c@section=0\else\arabic{section}.\fi\arabic{subsection}}
+\newcommand\subseculine{\bgroup\markoverwith{\color{maintext!27!paper}%
+    \rule[-1ex]{2pt}{.75pt}}\ULon}
+\titleformat{\subsection}
+    {\LocallyStopLineNumbers%
+    \subsecfont}{}{0em}
+    {\subseculine{\thesubsection~\textcolor{maintext!27!paper}{$|$}~#1}}
+    [\ResumeLineNumbers]
+\titleformat{name=\subsection,numberless}
+    {\LocallyStopLineNumbers%
+    \subsecfont}{}{0em}
+    {\subseculine{#1}}
+    [\ResumeLineNumbers]
+\else
+\titleformat{\subsection}
+    {\LocallyStopLineNumbers%
+    \subsecfont}
+    {\thesubsection}{.75em}
+    {#1}
+    [\ResumeLineNumbers]
+\fi
+
+%% Subsubsection
+\if@minimalist@runin
+\titleformat{\subsubsection}[runin]
+    {\color{maintext!70!paper}\subsubsecfont}{\thesubsubsection}{.5em}
+    {#1.}[\hspace*{.3em}]
+\else
+\titleformat{\subsubsection}
+    {\LocallyStopLineNumbers%
+    \color{maintext!70!paper}\subsubsecfont}{\thesubsubsection}{.5em}
+    {#1}
+    [\ResumeLineNumbers]
+\fi
+
+%% Paragraph
+\titleformat{\paragraph}[runin]
+    {\scshape}{\theparagraph}{1em}{#1}
+
+\titlespacing{\section}{0pt}{\baselineskip}{.6\baselineskip}
+\titlespacing{\subsection}{0pt}{.75\baselineskip}{.4\baselineskip}
+\titlespacing{\subsubsection}{0pt}{.5\baselineskip}{.2\baselineskip}
+
+%%================================
+%% ToC format
+%%================================
+\RequirePackage{titletoc}
+\titlecontents{part}
+    [0em]
+    {\addvspace{1.5pc}\filcenter\normalfont}
+    {\thecontentslabel\nopagebreak\\\nopagebreak\uppercase}
+    {}
+    {} % without page number
+    [\addvspace{.5pc}]
+\ifbool{IsBook}{
+    \titlecontents{chapter}
+        [2em] % i.e., 0em (part) + 2em
+        {\addvspace{.5pc}\normalfont}
+        {\contentslabel{2em}}
+        {\hspace*{-2em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+    \titlecontents{section}
+        [4em] % i.e., 2em (chapter) + 2em
+        {\normalfont}
+        {\contentslabel[\textcolor{maintext!27!paper}{\small\sec@decochar}\,\textcolor{maintext!90!paper}{\thecontentslabel}\,\textcolor{maintext!27!paper}{\small\sec@decochar}]{2em}}
+        {\hspace*{-2em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+    \titlecontents{subsection}
+        [6.5em] % i.e., 4em (section) + 2.5em
+        {\normalfont}
+        {\contentslabel{2.25em}}
+        {\hspace*{-2.25em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+    \titlecontents{subsubsection}
+        [8.5em] % i.e., 6.5em (subsection) + 3em
+        {\normalfont}
+        {\contentslabel{2.75em}}
+        {\hspace*{-2.75em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+}{
+    \titlecontents{section}
+        [2em] % i.e., 0em (part) + 2em
+        {\normalfont}
+        {\contentslabel{1.75em}}
+        {\hspace*{-1.75em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+    \titlecontents{subsection}
+        [4.5em] % i.e., 2em (section) + 2.5em
+        {\normalfont}
+        {\contentslabel{2.25em}}
+        {\hspace*{-2.25em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+    \titlecontents{subsubsection}
+        [7.5em] % i.e., 4.5em (subsection) + 3em
+        {\normalfont}
+        {\contentslabel{2.75em}}
+        {\hspace*{-2.75em}}
+        {\titlerule*[1em]{\textcolor{maintext!15!paper}{.}}\contentspage}
+}
+
+%%================================
+%% Lists
+%%================================
+\RequirePackage{enumitem}
+\setlist{noitemsep}
+\setlist[enumerate]{labelsep=*, leftmargin=*}
+\setlist[enumerate,1]{label=\arabic*$)$,
+    ref = \arabic*$)$}
+\setlist[enumerate,2]{label=\emph{\roman*}$)$,
+    ref = \arabic{enumi}.\emph{\roman*}$)$}
+\setlist[enumerate,3]{label=\emph{\alph*}$)$,
+    ref = \arabic{enumi}.\emph{\roman{enumii}}.\emph{\alph*}$)$}
+\setlist[description]{font=\normalfont\conditionalbfseries}
+\if@minimalist@classical
+\newcommand\desculine{\colorlet{currentcolor}{.}\bgroup\markoverwith{\color{currentcolor!50!paper}%
+    \rule[-.45ex]{2pt}{.75pt}}\ULon}
+\renewcommand{\descriptionlabel}[1]{%
+  \hspace{\labelsep}\normalfont\desculine{#1}%
+}
+\fi
+
+\setlist[itemize]{leftmargin=*}
+\gappto{\PJLlang@langconfig@common}{\setlist[itemize,1]{label=\colorlet{currentcolor}{.}\textcolor{currentcolor!27!paper}{$\bullet$}}}
+\gappto{\PJLlang@langconfig@FR}{\setlist[itemize,1]{label=\colorlet{currentcolor}{.}\textcolor{currentcolor!50!paper}{---}}}
+\setlist[itemize,2]{label=\colorlet{currentcolor}{.}\textcolor{currentcolor!27!paper}{--}}
+\setlist[itemize,3]{label=\colorlet{currentcolor}{.}\textcolor{currentcolor!27!paper}{\texttt{*}}}
+
+%%================================
+%% Blank page
+%%================================
+\newcommand{\blinkpagetext}{This page is intentionally left blank}
+\renewcommand{\cleardoublepage}{\relax
+    \clearpage
+    \if@twoside\ifodd\c@page\relax\else
+    \thispagestyle{empty}
+    \AddToHookNext{shipout/background}
+      {%
+       \put(0.5\paperwidth,-0.5\paperheight){%
+       \makebox[0pt]{\large\color{maintext!10!paper}\blinkpagetext}}}
+    \null\newpage\fi\fi}
+
+%%================================
+%% Draft mark
+%%================================
+\RequirePackage{PJLdraft}
+
+%%================================
+%% Theorems
+%%================================
+\RequirePackage{mathtools}
+\RequirePackage{amsthm}
+\if@minimalist@classical
+\def\simpleqedsymbol{%
+    \makebox[1em]{\rlap{\textcolor{maintext!12!paper}{\rule[-0.1em]{.95em}{.95em}}}{\kern.07em\raisebox{.07em}{\textcolor{paper}{\rule[-0.1em]{.81em}{.81em}}}\kern.07em}}}
+\newtheoremstyle{simple}%
+    {}{}%
+    {\normalfont}{}%
+    {\normalfont}{}%
+    {0pt}%
+    {\global\let\qedsymbol\simpleqedsymbol%
+        {\conditionalbfseries\thmname{#1}\thmnumber{ #2}}\hspace{.4em}%
+        \textcolor{maintext!27!paper}{$|$}\hspace{.4em}%
+        \color{maintext!50!paper}\thmnote{\ensuremath{(\text{#3})}~~}%
+        \pushQED{\qed}%
+    }
+\def\@endtheorem{\global\let\qedsymbol\simpleqedsymbol%
+    \popQED\endtrivlist\@endpefalse
+    \global\let\qedsymbol\qedsymbolOriginal}
+\else
+    \newtheoremstyle{simple}%
+        {}{}%
+        {\normalfont}{}%
+        {\normalfont}{}%
+        {0pt}%
+        {{\conditionalbfseries\minimalist@titlefontshape\thmname{#1}\thmnumber{ #2}}%
+            {\color{maintext!50!paper}\thmnote{\hspace{.4em}\ensuremath{(\text{#3})}}}~~{\normalfont---}~~}
+\fi
+
+\renewcommand{\qedsymbol}{%
+    \makebox[1em]{\color{maintext!27!paper}\rule[-0.1em]{.95em}{.95em}}}
+\let\qedsymbolOriginal\qedsymbol
+
+\if@minimalist@fast
+    \providecommand{\phantomsection}{}
+    \RequirePackage{url}
+    \newcommand{\href}[2]{#2}
+\else
+    \PassOptionsToPackage{hidelinks,linktoc=all}{hyperref}
+    \RequirePackage{bookmark}
+    \RequirePackage{hyperref}
+\fi
+
+\PassOptionsToPackage{nothms,simplename}{PJLthm}
+\RequirePackage{PJLthm}
+
+\pretocmd{\theoremnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameEN}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameEN}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameEN}{\textsc}{}{\FAIL}
+\pretocmd{\factnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameEN}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameEN}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameEN}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameEN}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameEN}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameEN}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameFR}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameFR}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameFR}{\textsc}{}{\FAIL}
+\pretocmd{\factnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameFR}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameFR}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameFR}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameFR}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameFR}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameFR}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameDE}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameDE}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameDE}{\textsc}{}{\FAIL}
+\pretocmd{\factnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameDE}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameDE}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameDE}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameDE}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameDE}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameDE}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameIT}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameIT}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameIT}{\textsc}{}{\FAIL}
+\pretocmd{\factnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameIT}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameIT}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameIT}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameIT}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameIT}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameIT}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanamePT}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynamePT}{\textsc}{}{\FAIL}
+\pretocmd{\propertynamePT}{\textsc}{}{\FAIL}
+\pretocmd{\factnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenamePT}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\notationnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\examplenamePT}{\textsc}{}{\FAIL}
+\pretocmd{\problemnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\questionnamePT}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenamePT}{\textsc}{}{\FAIL}
+\pretocmd{\remarknamePT}{\itshape}{}{\FAIL}
+\pretocmd{\observationnamePT}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameBR}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameBR}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameBR}{\textsc}{}{\FAIL}
+\pretocmd{\factnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameBR}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameBR}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameBR}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameBR}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameBR}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameBR}{\itshape}{}{\FAIL}
+
+\pretocmd{\theoremnameES}{\textsc}{}{\FAIL}
+\pretocmd{\lemmanameES}{\textsc}{}{\FAIL}
+\pretocmd{\propositionnameES}{\textsc}{}{\FAIL}
+\pretocmd{\corollarynameES}{\textsc}{}{\FAIL}
+\pretocmd{\propertynameES}{\textsc}{}{\FAIL}
+\pretocmd{\factnameES}{\textsc}{}{\FAIL}
+\pretocmd{\conjecturenameES}{\textsc}{}{\FAIL}
+\pretocmd{\definitionnameES}{\textsc}{}{\FAIL}
+\pretocmd{\axiomnameES}{\textsc}{}{\FAIL}
+\pretocmd{\assumptionnameES}{\textsc}{}{\FAIL}
+\pretocmd{\conventionnameES}{\textsc}{}{\FAIL}
+\pretocmd{\hypothesisnameES}{\textsc}{}{\FAIL}
+\pretocmd{\notationnameES}{\textsc}{}{\FAIL}
+\pretocmd{\examplenameES}{\textsc}{}{\FAIL}
+\pretocmd{\problemnameES}{\textsc}{}{\FAIL}
+\pretocmd{\questionnameES}{\textsc}{}{\FAIL}
+\pretocmd{\exercisenameES}{\textsc}{}{\FAIL}
+\pretocmd{\remarknameES}{\itshape}{}{\FAIL}
+\pretocmd{\observationnameES}{\itshape}{}{\FAIL}
+
+
+\theoremstyle{simple}
+
+\def\minimalist@definethms{
+\if@minimalist@nothms\else
+\if@minimalist@nothmnum
+\CreateTheorem*{theorem}
+\CreateTheorem*{lemma}
+\CreateTheorem*{proposition}
+\CreateTheorem*{corollary}
+\CreateTheorem*{definition-proposition}
+\CreateTheorem*{definition-theorem}
+\CreateTheorem*{property}
+\CreateTheorem*{fact}
+\CreateTheorem*{conjecture}
+\else
+\CreateTheorem@thmnum{theorem}
+\CreateTheorem{lemma}[theorem]
+\CreateTheorem{proposition}[theorem]
+\CreateTheorem{corollary}[theorem]
+\CreateTheorem{definition-proposition}[theorem]
+\CreateTheorem{definition-theorem}[theorem]
+\CreateTheorem{property}[theorem]
+\CreateTheorem{fact}[theorem]
+\CreateTheorem{conjecture}[theorem]
+\fi
+\CreateTheorem*{theorem*}
+\CreateTheorem*{lemma*}
+\CreateTheorem*{proposition*}
+\CreateTheorem*{corollary*}
+\CreateTheorem*{definition-proposition*}
+\CreateTheorem*{definition-theorem*}
+\CreateTheorem*{property*}
+\CreateTheorem*{fact*}
+\CreateTheorem*{conjecture*}
+\if@minimalist@nothmnum
+\CreateTheorem*{definition}
+\CreateTheorem*{axiom}
+\CreateTheorem*{assumption}
+\CreateTheorem*{convention}
+\CreateTheorem*{hypothesis}
+\CreateTheorem*{notation}
+\CreateTheorem*{example}
+\CreateTheorem*{problem}
+\CreateTheorem*{question}
+\CreateTheorem*{exercise}
+\else
+\CreateTheorem{definition}[theorem]
+\CreateTheorem{axiom}[theorem]
+\CreateTheorem{assumption}[theorem]
+\CreateTheorem{convention}[theorem]
+\CreateTheorem{hypothesis}[theorem]
+\CreateTheorem{notation}[theorem]
+\CreateTheorem{example}[theorem]
+\CreateTheorem{problem}[theorem]
+\CreateTheorem{question}[theorem]
+\CreateTheorem{exercise}[theorem]
+\fi
+\CreateTheorem*{definition*}
+\CreateTheorem*{axiom*}
+\CreateTheorem*{assumption*}
+\CreateTheorem*{convention*}
+\CreateTheorem*{hypothesis*}
+\CreateTheorem*{notation*}
+\CreateTheorem*{example*}
+\CreateTheorem*{problem*}
+\CreateTheorem*{question*}
+\CreateTheorem*{exercise*}
+\if@minimalist@nothmnum
+\CreateTheorem*{remark}
+\CreateTheorem*{observation}
+\else
+\CreateTheorem@thmnum{remark}
+\CreateTheorem@thmnum{observation}
+\fi
+\CreateTheorem*{remark*}
+\CreateTheorem*{observation*}
+\fi
+}
+
+\if@minimalist@delaythms
+    \AtEndPreamble{\minimalist@definethms}
+\else
+    \minimalist@definethms
+\fi
+
+\ifbool{IsBook}{}{%
+
+%%================================
+%% Title block style
+%%================================
+\if@minimalist@classical
+\renewcommand{\@maketitle}{%
+    \LocallyStopLineNumbers%
+    \noindent%
+    {\textcolor{maintext!27!paper}{\rule{\textwidth}{0.75pt}}}%
+    % \vspace{-\parskip}%
+    \vspace{-.5\baselineskip}%
+    \begin{flushright}%
+        \let\footnote\thanks%
+        {\conditionalbfseries\@title}\\\medskip%
+        \color{maintext!80!paper}%
+        {\small\scshape\@author}%
+        \par\vspace{-\parskip}\vspace{2pt}%
+        {\small\@date}%
+    \end{flushright}%
+    % \vspace{-\parskip}%
+    \vspace{-.5\baselineskip}%
+    \ifx\@date\@empty%
+        \vspace{\baselineskip}%
+        \vspace{1.2\parskip}%
+    \else%
+        \vspace{-.5\baselineskip}%
+    \fi%
+    {\textcolor{maintext!27!paper}{\rule{\textwidth}{0.75pt}}\par}%
+    \ResumeLineNumbers%
+}
+\else
+\renewcommand{\@maketitle}{%
+    \LocallyStopLineNumbers%
+    \begin{center}%
+        \let\footnote\thanks%
+        {\conditionalbfseries\minimalist@titlefontshape\large\@title}\\\bigskip%
+        \color{maintext!80!paper}%
+        {\small\scshape\@author}\\[2pt]%
+        {\small\@date}%
+    \end{center}%
+    \ifx\@date\@empty\bigskip\fi%
+    \bigskip\par%
+    \ResumeLineNumbers%
+}
+\fi
+\apptocmd{\maketitle}{\thispagestyle{fancy}}{}{\FAIL}
+
+%%================================
+%% Abstract style
+%%================================
+\if@minimalist@classical
+\renewenvironment{abstract}{%
+    \LocallyStopLineNumbers%
+    \begin{flushright}%
+        \textsc{\conditionalbfseries\small\abstractname}\par%
+        \vspace{-\parskip}%
+        \vspace{-.25\baselineskip}%
+        \begin{minipage}[t]{.833\textwidth}%
+            \vspace{0pt}%
+            \color{maintext!80!paper}%
+            \footnotesize%
+            \parindent=2em
+}{%
+        \end{minipage}%
+    \end{flushright}%
+    \bigskip%
+    \ResumeLineNumbers%
+}
+\else
+\renewenvironment{abstract}{%
+    \LocallyStopLineNumbers%
+    \vspace{-\baselineskip}%
+    \begin{center}%
+        \textsc{\conditionalbfseries\minimalist@titlefontshape\small\abstractname}\\%
+        \vspace{-.3\baselineskip}%
+        \begin{minipage}[t]{.833\textwidth}%
+            \vspace{0pt}%
+            \color{maintext!80!paper}%
+            \footnotesize%
+            \parindent=2em
+}{%
+        \end{minipage}%
+    \end{center}%
+    \medskip%
+    \ResumeLineNumbers%
+}
+\fi
+
+%%================================
+%% Keyword environment
+%%================================
+\def\keywordnameEN{\textsc{Keywords}}
+\def\keywordnameFR{\textsc{Mots clés}}
+\def\keywordnameDE{\textsc{Schlüsselwörter}}
+\def\keywordnameCN{关键词}
+\def\keywordnameTC{關鍵詞}
+\def\keywordnameJP{キーワード}
+\def\keywordnameRU{Ключевые слова}
+
+\if@minimalist@classical
+\newenvironment{keyword}{%
+    \LocallyStopLineNumbers%
+    \vspace{-.5\baselineskip}%
+    \begin{flushright}%
+        {\conditionalbfseries\small\csname keywordname\csname\languagename ABBR\endcsname\endcsname}\par%
+        \vspace{-\parskip}%
+        \vspace{-.30\baselineskip}%
+        \begin{minipage}[t]{.833\textwidth}%
+            \vspace{0pt}%
+            \color{maintext!80!paper}%
+            \footnotesize%
+            \parindent=2em
+            \raggedleft%
+}{%
+        \end{minipage}%
+    \end{flushright}%
+    \bigskip%
+    \ResumeLineNumbers%
+}
+\else
+\newenvironment{keyword}{%
+    \LocallyStopLineNumbers%
+    \vspace{-.75\baselineskip}%
+    \begin{center}%
+        {\conditionalbfseries\small\csname keywordname\csname\languagename ABBR\endcsname\endcsname}\\%
+        \vspace{-.3\baselineskip}%
+        \begin{minipage}[t]{.833\textwidth}%
+            \vspace{0pt}%
+            \color{maintext!80!paper}%
+            \footnotesize%
+            \parindent=2em
+            \begin{center}%
+}{%
+            \end{center}%
+        \end{minipage}%
+    \end{center}%
+    \medskip%
+    \ResumeLineNumbers%
+}
+\fi
+
+%%================================
+%% Simulate features of amsart
+%%================================
+\PassOptionsToPackage{amsfashion}{PJLauthor}
+\RequirePackage{PJLauthor}
+
+}
+
+\endinput
+%%
+%% End of file `minimalist/minimalist.sty'.

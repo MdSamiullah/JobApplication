@@ -1,0 +1,51 @@
+%%
+%% This is file `ifallfalse.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% ifallfalse.dtx  (with options: `package')
+%% This work may be distributed and/or modified under
+%% the conditions the LaTeX Project Public License (LPPL),
+%% either version 1.3 of this license or (at your option)
+%% any later version. The latest version of this license
+%% can be found in
+%%     http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ifallfalse}[2021/07/22 v2.0.0 Compare string against set of other strings]
+
+\newenvironment{allfalse}[3]
+{%
+    \newif\ifallfalse@branch\allfalse@branchtrue%
+    \def\comparedstring{#1}%
+    \def\trueaction{#2}%
+    \def\falseaction{#3}%
+    \def\logicbody{\protect\allfalse@branchfalse}%
+}
+{%
+    \logicbody%
+    \ifallfalse@branch
+        \trueaction%
+    \else
+        \falseaction%
+    \fi
+}
+\newcommand*\@allfalsename{allfalse}
+
+\newcommand{\orcheck}[1]{
+    \ifx\@currenvir\@allfalsename
+        \protected@edef\logicbody{
+            \ifnum\pdfstrcmp{\comparedstring}{#1}=0\else\logicbody\fi
+        }
+    \else
+        \PackageError{ifallfalse}{
+            \protect\orcheck\space should be nested within the allfalse environment
+        }{}
+    \fi
+}
+\endinput
+%%
+%% End of file `ifallfalse.sty'.

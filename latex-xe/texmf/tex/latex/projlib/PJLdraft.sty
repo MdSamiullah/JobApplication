@@ -1,0 +1,104 @@
+%%
+%% This is file `PJLdraft.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{PJLdraft}
+    [2021/12/16 Some useful macros for the draft stage]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{
+    family = @PJLdraft,
+    prefix = @PJLdraft@,
+}
+\DeclareBoolOption[false]{draft}
+\DeclareBoolOption[false]{fast}
+\ProcessKeyvalOptions*\relax
+\if@PJLdraft@draft
+    \@PJLdraft@fasttrue
+\fi
+
+\RequirePackage{PJLlang}
+\RequirePackage{xcolor}
+
+\def\dnfFont{\ttfamily}
+\def\needgraphFont{\ttfamily}
+
+\def\dnfTextEN{To be finished}
+\def\needgraphTextEN{A graph is needed here}
+\def\dnfTextFR{Pas encore fini}
+\def\needgraphTextFR{Il manque une image ici}
+\def\dnfTextDE{Nicht beendet}
+\def\needgraphTextDE{Benötigen Sie ein Bild}
+\def\dnfTextIT{Per essere finito}
+\def\needgraphTextIT{Manca un'immagine qui}
+\def\dnfTextPT{Não terminou}
+\def\needgraphTextPT{Precisa de uma foto aqui}
+\def\dnfTextBR{Não terminou}
+\def\needgraphTextBR{Precisa de uma foto aqui}
+\def\dnfTextES{Estar terminado}
+\def\needgraphTextES{Falta una imagen aquí}
+\def\dnfTextCN{这里尚未完成}
+\def\needgraphTextCN{这里需要一张图片}
+\def\dnfTextTC{這裡尚未完成}
+\def\needgraphTextTC{這裡需要一張圖片}
+\def\dnfTextJP{終わってない}
+\def\needgraphTextJP{まだ画像が必要です}
+\def\dnfTextRU{Не закончен}
+\def\needgraphTextRU{Еще нужна картинка}
+
+\definecolor{dnfColor}{RGB}{21,122,20}
+\definecolor{needgraphColor}{RGB}{70,130,180}
+
+\if@PJLdraft@fast
+    \newcommand{\plainBox}[2][-paper]{\textcolor{#1}{%
+    \setlength{\fboxsep}{1.5pt}%
+    \setlength{\fboxrule}{1.2pt}%
+    \fbox{#2}}}
+\else
+    \PassOptionsToPackage{many}{tcolorbox}
+    \RequirePackage{tcolorbox}
+    \newtcbox{\plainBox}[1][-paper]{enhanced jigsaw,%
+        on line, arc = 1.2pt, outer arc = 1pt,breakable,%
+        colframe = #1,colupper=#1,opacityback=0,%
+        boxsep = 1pt,boxrule = 1.2pt,%
+        left = 1pt, right = 1pt, top = 0pt, bottom = 0pt,%
+    }
+\fi
+
+\newcounter{dnfcnt}
+\newcounter{needgraphcnt}
+
+\NewDocumentCommand{\dnf}{d<>}{%
+    \noindent\plainBox[dnfColor]%
+    {\normalfont\dnfFont\bfseries\small%
+    \csname dnfText\csname\languagename ABBR\endcsname\endcsname%
+    \stepcounter{dnfcnt}~\#\thednfcnt%
+    \IfNoValueF{#1}{\,: #1}}%
+}
+\NewDocumentCommand{\needgraph}{d<>}{%
+    \begin{center}%
+        \plainBox[needgraphColor]%
+        {\normalfont\needgraphFont\bfseries\small%
+        \csname needgraphText\csname\languagename ABBR\endcsname\endcsname%
+        \stepcounter{needgraphcnt}~\#\theneedgraphcnt%
+        \IfNoValueF{#1}{\,: #1}}%
+    \end{center}%
+}
+
+\endinput
+%%
+%% End of file `PJLdraft.sty'.

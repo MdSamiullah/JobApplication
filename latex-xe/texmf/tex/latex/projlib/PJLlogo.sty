@@ -1,0 +1,72 @@
+%%
+%% This is file `PJLlogo.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{PJLlogo}
+    [2021/12/16 The ProjLib logo]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{
+    family = @PJLlogo,
+    prefix = @PJLlogo@,
+}
+\DeclareBoolOption[false]{draft}
+\DeclareBoolOption[false]{fast}
+\ProcessKeyvalOptions*\relax
+\if@PJLlogo@draft
+    \@PJLlogo@fasttrue
+\fi
+\if@PJLlogo@fast\def\ProjLib{{\normalfont ProjLib}}\endinput\fi
+
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\ifdefined\fontspec
+  \newfontface{\PJLlogo@font}{LinBiolinum_R.otf}
+\else
+  \RequirePackage[T1]{fontenc}
+  \newcommand{\PJLlogo@font}{\fontfamily{LinuxBiolinumT-TLF}\selectfont}
+\fi
+
+\newcommand{\PJLSigmaJ}{%
+  \vbox{\offinterlineskip
+    \ialign{%
+      \hfil##\hfil\cr
+      \hidewidth\hskip0.15ex\scalebox{0.4}{\rotatebox{-10}{\usefont{U}{zeur}{b}{n}\symbol{"06}}}\hidewidth\cr
+      \noalign{\kern0.15ex}
+      \j\cr
+    }%
+  }%
+}
+
+\newcommand{\ProjLib@generic}[1]{%
+  \begingroup
+  \normalfont\PJLlogo@font
+  \textcolor{blue!60!cyan}{P}%
+  \textcolor{blue!45!cyan}{r}%
+  \textcolor{blue!30!cyan}{o}%
+  \textcolor{green!70!black}{#1}%
+  \textcolor{red!20!yellow}{L}%
+  \textcolor{red!40!yellow}{i}%
+  \textcolor{red!60!yellow}{b}%
+  \endgroup
+}
+\DeclareRobustCommand*{\ProjLib}{\ProjLib@generic{\PJLSigmaJ}}
+\DeclareRobustCommand*{\ProjLibText}{\ProjLib@generic{j}}
+
+\endinput
+%%
+%% End of file `PJLlogo.sty'.

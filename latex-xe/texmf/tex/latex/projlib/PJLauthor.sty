@@ -1,0 +1,245 @@
+%%
+%% This is file `PJLauthor.sty',
+%% generated with the docstrip utility.
+
+%% Copyright (C) 2021 by Jinwen XU
+%% 
+%% This is part of the ProjLib Toolkit.
+%% 
+%% This work may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License, either version 1.3c of this license or (at
+%% your option) any later version. The latest version of this license is in
+%% 
+%%     http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3c or later is part of all distributions of LaTeX version
+%% 2005/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{PJLauthor}
+    [2021/12/16 Enhanced author information block]
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+\SetupKeyvalOptions{
+    family = @PJLauthor,
+    prefix = @PJLauthor@,
+}
+\DeclareBoolOption[false]{amsfashion}
+\ProcessKeyvalOptions*\relax
+
+\ifdefined\subjclass\endinput\fi
+
+%%================================
+%% Font and style
+%%================================
+\def\PJLauthor@font@author{\normalsize\normalfont\scshape}
+\def\PJLauthor@font@address{\small\normalfont\itshape}
+\def\PJLauthor@font@curraddr{\small\normalfont\itshape}
+\def\PJLauthor@font@email{\small\normalfont\ttfamily}
+
+%%================================
+%% Lengths
+%%================================
+\newlength{\PJLauthor@length@innersep}
+\setlength{\PJLauthor@length@innersep}{.3\baselineskip}
+\newlength{\PJLauthor@length@sep}
+\setlength{\PJLauthor@length@sep}{.5\baselineskip}
+\newlength{\PJLauthor@length@aftersep}
+\setlength{\PJLauthor@length@aftersep}{.3\baselineskip}
+
+%%================================
+%% The macros
+%%================================
+\newif\if@PJLauthor@affilon
+\renewcommand*{\author}[1]{%
+    \gappto\@author{\phantom{A}\\[-\baselineskip]%
+    \vspace{\PJLauthor@length@sep}%
+    \PJLauthor@font@author{#1}\\\phantom{}
+    \@PJLauthor@affilonfalse}}
+\providecommand*{\address}[1]{%
+    \gappto\@author{\phantom{A}\\[-\baselineskip]%
+        \if@PJLauthor@affilon\else%
+            \vspace{\PJLauthor@length@innersep}%
+        \fi%
+        \@PJLauthor@affilontrue%
+        \PJLauthor@font@address{#1}\\\phantom{}}%
+}
+\providecommand*{\curraddr}[1]{%
+    \gappto\@author{\phantom{A}\\[-\baselineskip]%
+        \if@PJLauthor@affilon\else%
+            \vspace{\PJLauthor@length@innersep}%
+        \fi%
+        \@PJLauthor@affilontrue%
+        \PJLauthor@font@curraddr{#1}\\\phantom{}}%
+}
+\providecommand*{\email}[1]{%
+    \gappto\@author{\phantom{A}\\[-\baselineskip]%
+        \if@PJLauthor@affilon\else%
+            \vspace{\PJLauthor@length@innersep}%
+        \fi%
+        \@PJLauthor@affilontrue%
+        \PJLauthor@font@email{#1}\\\phantom{}}%
+}
+
+%%================================
+%% Adjustment
+%%================================
+\patchcmd{\@maketitle}{\begin{tabular}[t]{c}}{}{}{}
+\patchcmd{\@maketitle}{\end{tabular}}{}{}{}
+\def\@author{}
+\pretocmd{\@maketitle}{%
+    \pretocmd{\@author}{\vspace{-\PJLauthor@length@sep}}{}{\FAIL}%
+    \apptocmd{\@author}{%
+        \vspace{-\baselineskip}%
+        \if@PJLauthor@affilon%
+            \vspace{\PJLauthor@length@aftersep}%
+        \fi%
+    }{}{\FAIL}%
+}{}{\FAIL}
+
+\ifbool{@PJLauthor@amsfashion}{
+
+\RequirePackage{PJLlang}
+\RequirePackage{calc}
+
+\providecommand{\conditionalbfseries}{\bfseries}
+
+\def\keywordsnameEN{\textsc{Key words and phrases}}
+\def\keywordsnameFR{\textsc{Mots et phrases clés}}
+\def\keywordsnameDE{\textsc{Schlüsselwörter und Phrasen}}
+\def\keywordsnameIT{\textsc{Parole e frasi chiave}}
+\def\keywordsnamePT{\textsc{Palavras e frases chave}}
+\def\keywordsnameBR{\textsc{Palavras e frases chave}}
+\def\keywordsnameES{\textsc{Palabras y frases clave}}
+\def\keywordsnameCN{关键词}
+\def\keywordsnameTC{關鍵詞}
+\def\keywordsnameJP{キーワード}
+\def\keywordsnameRU{Ключевые слова и фразы}
+
+\def\PJL@keywords{}
+\providecommand*{\keywords}[1]{\def\PJL@keywords{#1}}
+
+\def\PJL@dedicatory{}
+\providecommand*{\dedicatory}[1]{\def\PJL@dedicatory{#1}}
+
+\AtEndPreamble{
+\let\footnotemark@PJLoriginal\footnotemark%
+\let\footnotemark\relax%
+\let\thanks@PJLoriginal\thanks%
+\newlength\PJL@starlength
+\setlength{\PJL@starlength}{\widthof{*}}
+\newcommand*{\PJL@prethanks}[1]{\thanks@PJLoriginal{\hspace*{-\PJL@starlength}#1}}
+\renewcommand*{\thanks}[1]{%
+    \ifx#1\@empty\else%
+        \apptocmd{\@title}{%
+            \thanks@PJLoriginal{\hspace*{-\PJL@starlength}#1}%
+        }{}{\FAIL}%
+    \fi}
+\let\author@PJLoriginal\author
+\renewcommand{\author}[1]{%
+    \author@PJLoriginal{%
+        \let\footnotemark\footnotemark@PJLoriginal%
+        \let\thanks\thanks@PJLoriginal%
+        #1%
+        \let\footnotemark\relax%
+    }%
+}
+}
+
+\let\abstract@PJLoriginal\abstract%
+\let\endabstract@PJLoriginal\endabstract%
+\newif\if@PJLauthor@maketitle\@PJLauthor@maketitlefalse
+\newif\if@PJLauthor@absbefore\@PJLauthor@absbeforefalse
+\RequirePackage{fancyvrb}
+\providecommand*\protected@iwrite[3]{%
+  \begingroup
+  \let\thepage\relax
+  #2%
+  \let\protect\@unexpandable@protect
+  \edef\reserved@a{\immediate\write#1{#3}}\reserved@a
+  \endgroup
+  \if@nobreak\ifvmode\nobreak\fi\fi
+}
+\patchcmd{\FVB@VerbatimOut}
+  {\immediate\write\FV@OutFile}
+  {\protected@iwrite\FV@OutFile{}}
+  {}{}
+\renewenvironment{abstract}{%
+    \VerbatimOut{\jobname.pjlabs}%
+}{
+    \endVerbatimOut%
+    \if@PJLauthor@maketitle%
+        \begin{abstract@PJLoriginal}%
+            \input{\jobname.pjlabs}%
+        \end{abstract@PJLoriginal}%
+        % \ifx\PJL@keywords\@empty\else%
+        %     \par\smallskip\noindent{\conditionalbfseries\csname keywordsname\csname\languagename ABBR\endcsname\endcsname.}~\PJL@keywords%
+        % \fi%
+    \else%
+        \global\@PJLauthor@absbeforetrue%
+    \fi%
+}
+
+\AtEndPreamble{%
+\patchcmd{\@maketitle}{\@date}{%
+    \ifx\@date\@empty\vspace{-2\baselineskip}%
+    \else\@date\fi%
+    \ifx\PJL@dedicatory\@empty\else%
+        \ifx\@date\@empty\vspace{2\baselineskip}\fi%
+        \par\vspace{-\parskip}\bigskip%
+        {\itshape\PJL@dedicatory}%
+        \ifx\@date\@empty%
+            \vspace{-1.7\baselineskip}%
+            \vspace{-\parskip}%
+        \fi%
+    \fi%
+}{}{\FAIL}
+\pretocmd{\maketitle}{%
+    \ifx\PJL@keywords\@empty\else%
+    \PJL@prethanks{{\protect\conditionalbfseries%
+    \csname keywordsname\csname\languagename ABBR\endcsname\endcsname.}%
+    ~\PJL@keywords}%
+    \fi}{}{\FAIL}
+\apptocmd{\maketitle}{%
+    \if@PJLauthor@absbefore%
+        \begin{abstract@PJLoriginal}%
+            \input{\jobname.pjlabs}%
+            % \ifx\PJL@keywords\@empty\else%
+            %     \par\smallskip\noindent{\conditionalbfseries\csname keywordsname\csname\languagename ABBR\endcsname\endcsname.}~\PJL@keywords%
+            % \fi%
+        \end{abstract@PJLoriginal}%
+    \fi%
+    \global\let\address\relax
+    \global\let\curraddr\relax
+    \global\let\email\relax
+    \global\let\dedicatory\relax
+    \global\let\keywords\relax
+    \global\@PJLauthor@maketitletrue
+}{}{\FAIL}
+}
+
+\newcommand*\subjclass[2][2020]{%
+    \def\@subjclass{#2}%
+    \@ifundefined{subjclassname@#1}{%
+        \ClassWarning{\@currname}{Unknown edition (#1) of Mathematics
+        Subject Classification; using '2020'}%
+        \expandafter\let\expandafter\subjclassname\csname subjclassname@2020\endcsname
+    }{%
+        \expandafter\let\expandafter\subjclassname\csname subjclassname@#1\endcsname
+    }%
+    \PJL@prethanks{{\itshape\subjclassname.}\enspace\@subjclass{}.}
+}
+\@namedef{subjclassname@1991}{%
+  \textup{1991} Mathematics Subject Classification}
+\@namedef{subjclassname@2000}{%
+  \textup{2000} Mathematics Subject Classification}
+\@namedef{subjclassname@2010}{%
+  \textup{2010} Mathematics Subject Classification}
+\@namedef{subjclassname@2020}{%
+  \textup{2020} Mathematics Subject Classification}
+
+}
+
+\endinput
+%%
+%% End of file `PJLauthor.sty'.
